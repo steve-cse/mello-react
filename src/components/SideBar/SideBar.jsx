@@ -20,20 +20,28 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
 });
-const drawerWidth = 240;
 
+const drawerWidth = 240;
 export default function ResponsiveDrawer() {
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
+  const handleListItemClick = (event, index) => {
+    setSelectedIndex(index);
+  };
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
   return (
     <ThemeProvider theme={darkTheme}>
       <Box sx={{ display: "flex" }}>
@@ -83,14 +91,15 @@ export default function ResponsiveDrawer() {
             ].map((text, index) => (
               <ListItem
                 secondaryAction={
-                  <IconButton edge="end" aria-label="more">
+                  <IconButton edge="end" aria-label="more" >
                     <MoreHorizIcon />
                   </IconButton>
                 }
                 key={text}
                 disablePadding
               >
-                <ListItemButton>
+                <ListItemButton  selected={selectedIndex === index}
+                  onClick={(event) => handleListItemClick(event, index)}>
                   <ListItemText primary={text} />
                 </ListItemButton>
               </ListItem>
@@ -117,17 +126,15 @@ export default function ResponsiveDrawer() {
               "Previous Chat 3",
               "Previous Chat 4",
             ].map((text, index) => (
-              <ListItem
-                secondaryAction={
-                  <IconButton edge="end" aria-label="more">
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  selected={selectedIndex === index}
+                  onClick={(event) => handleListItemClick(event, index)}
+                >
+                  <ListItemText primary={text} />
+                  <IconButton edge="end">
                     <MoreHorizIcon />
                   </IconButton>
-                }
-                key={text}
-                disablePadding
-              >
-                <ListItemButton>
-                  <ListItemText primary={text} />
                 </ListItemButton>
               </ListItem>
             ))}
