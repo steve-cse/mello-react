@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ChatMessages from "../ChatMessages/ChatMessages";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import AddIcon from "@mui/icons-material/Add";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
@@ -22,6 +23,8 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 const darkTheme = createTheme({
   palette: {
@@ -48,7 +51,10 @@ export default function ResponsiveDrawer() {
         <CssBaseline />
         <AppBar
           position="fixed"
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+          color="default"
         >
           <Toolbar>
             <IconButton
@@ -60,10 +66,14 @@ export default function ResponsiveDrawer() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Mello (Mistral-7B-Instruct-v0.1)
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+              Mello
             </Typography>
+            <IconButton >
+              <GitHubIcon />
+            </IconButton>
           </Toolbar>
+          
         </AppBar>
         <Drawer
           variant="temporary"
@@ -81,7 +91,9 @@ export default function ResponsiveDrawer() {
           }}
         >
           <Toolbar />
-
+          <Button variant="outlined" sx={{ m: 2 }} startIcon={<AddIcon />}>
+            New Chat
+          </Button>
           <List>
             {[
               "Previous Chat 1",
@@ -91,15 +103,17 @@ export default function ResponsiveDrawer() {
             ].map((text, index) => (
               <ListItem
                 secondaryAction={
-                  <IconButton edge="end" aria-label="more" >
+                  <IconButton edge="end" aria-label="more">
                     <MoreHorizIcon />
                   </IconButton>
                 }
                 key={text}
                 disablePadding
               >
-                <ListItemButton  selected={selectedIndex === index}
-                  onClick={(event) => handleListItemClick(event, index)}>
+                <ListItemButton
+                  selected={selectedIndex === index}
+                  onClick={(event) => handleListItemClick(event, index)}
+                >
                   <ListItemText primary={text} />
                 </ListItemButton>
               </ListItem>
@@ -119,12 +133,16 @@ export default function ResponsiveDrawer() {
           }}
         >
           <Toolbar />
+          <Button variant="outlined" sx={{ m: 2 }} startIcon={<AddIcon />}>
+            New Chat
+          </Button>
+
           <List>
             {[
               "Previous Chat 1",
               "Previous Chat 2",
               "Previous Chat 3",
-              "Previous Chat 4",
+              "Previous Chat 5",
             ].map((text, index) => (
               <ListItem key={text} disablePadding>
                 <ListItemButton
