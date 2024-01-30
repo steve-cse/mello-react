@@ -69,7 +69,7 @@ export default function ResponsiveDrawer() {
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
               Mello
             </Typography>
-            <IconButton >
+            <IconButton href="https://github.com/steve-cse/mello-react" >
               <GitHubIcon />
             </IconButton>
           </Toolbar>
@@ -167,7 +167,7 @@ export default function ResponsiveDrawer() {
               alignItems="center"
               justifyContent={message.user ? "flex-end" : "flex-start"}
             >
-              {!message.user && <Avatar sx={{ ml: 1 }}>B</Avatar>}
+              {!message.user && <Avatar sx={{ ml: 1 }} alt="Mello" src="/mello_avatar.webp" >B</Avatar>}
 
               <Typography
                 paragraph={true}
