@@ -30,7 +30,7 @@ function App() {
   return (
     
     <ThemeProvider theme={theme}>
-      <Chat/>
+      <Landing/>
    
     </ThemeProvider>
   )

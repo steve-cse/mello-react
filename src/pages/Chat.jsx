@@ -156,7 +156,7 @@ export default function ResponsiveDrawer() {
             justifyContent={message.user ? "flex-end" : "flex-start"}
           >
             {!message.user && (
-              <Avatar sx={{ ml: 1 }} alt="Mello" src="/mello_avatar.webp">
+              <Avatar sx={{ ml: 1 }} alt="mello_avatar" src="/mello_avatar.webp">
                 B
               </Avatar>
             )}
