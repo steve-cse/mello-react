@@ -79,7 +79,7 @@ export default function ResponsiveDrawer() {
         }}
       >
         <Toolbar />
-        <Button variant="outlined" sx={{ m: 2 }} startIcon={<AddIcon />}>
+        <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
           New Chat
         </Button>
         <List>
@@ -121,7 +121,7 @@ export default function ResponsiveDrawer() {
         }}
       >
         <Toolbar />
-        <Button variant="outlined" sx={{ m: 2 }} startIcon={<AddIcon />}>
+        <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
           New Chat
         </Button>
 
@@ -164,7 +164,7 @@ export default function ResponsiveDrawer() {
             <Typography
               paragraph={true}
               sx={{
-                backgroundColor: message.user ? "#9333ea" : "#d1d5db",
+                backgroundColor: message.user ? "#6200EE" : "#d1d5db",
                 color: message.user ? "#FFFFFF" : "#000000",
                 borderRadius: "19px",
                 padding: "10px",
@@ -188,7 +188,7 @@ export default function ResponsiveDrawer() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
-                  <IconButton color="primary" aria-label="speak">
+                  <IconButton  aria-label="speak">
                     <MicIcon />
                   </IconButton>
                 </InputAdornment>
@@ -196,7 +196,7 @@ export default function ResponsiveDrawer() {
               style: { borderRadius: 15 },
             }}
           />
-          <IconButton color="primary">
+          <IconButton>
             <SendIcon />
           </IconButton>
         </Box>
