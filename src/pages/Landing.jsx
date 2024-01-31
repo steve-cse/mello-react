@@ -38,8 +38,8 @@ export default function Landing() {
                 >
                     <img
                         src="/logo.png"
-                        alt="Your Image"
-                        style={{ width: "180px", marginBottom: "20px" }}
+                        alt="mello_logo"
+                        style={{ width: "140px", marginBottom: "20px" }}
                     />
                     <Typography
                         component="h1"
@@ -48,15 +48,18 @@ export default function Landing() {
                     >
                         Welcome to Mello
                     </Typography>
-                    <Typography variant="h6" sx={{ mb: 4, fontStyle: "oblique" }}>
+                    <Typography variant="h6" sx={{ mb: 4, fontStyle: "italic" }}>
                         {" "}
-                        “Your Companion for Mental Health.”
+                        Your Companion for Mental Health
                     </Typography>
                     <Button variant="contained" color="primary" sx={{ mb: 2, width: '200px' }}>
                         Log in
                     </Button>
-                    <Button variant="contained" color="primary" sx={{ mb: 4 , width: '200px'}}>
+                    <Button variant="contained" color="primary" sx={{ mb: 2 , width: '200px'}}>
                         Sign up
+                    </Button>
+                    <Button variant="outlined" color="secondary" sx={{  width: '200px'}}>
+                        Try as Guest
                     </Button>
                     
                 </Box>
