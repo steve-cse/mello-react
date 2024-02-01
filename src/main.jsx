@@ -6,6 +6,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Landing from "./pages/Landing.jsx";
 import Chat from "./pages/Chat.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 let theme = createTheme({
   palette: {
@@ -25,9 +27,17 @@ const router = createBrowserRouter([
     element: <Landing />,
   },
   {
-    path: "chat",
+    path: "/chat",
     element: <Chat />,
   },
+  {
+    path: "/login",
+    element: <Login/>
+  },
+  {
+    path: "/signup",
+    element:<Signup/>
+  }
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

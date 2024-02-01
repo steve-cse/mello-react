@@ -164,7 +164,7 @@ export default function ResponsiveDrawer() {
               <Avatar
                 sx={{ ml: 1 }}
                 alt="mello_avatar"
-                src="/mello_avatar.webp"
+                src="/mello_avatar.png"
               >
                 B
               </Avatar>

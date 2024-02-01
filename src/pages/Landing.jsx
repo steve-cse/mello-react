@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-
+import Avatar from "@mui/material/Avatar";
 export default function Landing() {
     return (
         <Grid container component="main" sx={{ height: "100vh" }}>
@@ -16,7 +16,8 @@ export default function Landing() {
                 sm={4}
                 md={7}
                 sx={{
-                    backgroundImage: "url(https://source.unsplash.com/featured/?quotes)",
+                    backgroundImage:
+                        "url(https://source.unsplash.com/featured/?motivational-quotes)",
                     backgroundRepeat: "no-repeat",
                     backgroundColor: (t) =>
                         t.palette.mode === "light"
@@ -36,11 +37,10 @@ export default function Landing() {
                         alignItems: "center",
                     }}
                 >
-                    <img
-                        src="/logo.png"
-                        alt="mello_logo"
-                        style={{ width: "188px", marginBottom: "20px" }}
-                    />
+
+                    <Avatar sx={{ mb: '20px', height: '85px', width: '85px' }} alt="mello_logo" src="/mello_avatar.png">
+                        M
+                    </Avatar>
                     <Typography
                         component="h1"
                         variant="h3"
@@ -52,16 +52,23 @@ export default function Landing() {
                         {" "}
                         Your Companion for Mental Health
                     </Typography>
-                    <Button variant="contained" color="primary" sx={{ mb: 2, width: '200px' }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ mb: 2, width: "200px" }}
+                    >
                         Log in
                     </Button>
-                    <Button variant="contained" color="primary" sx={{ mb: 2 , width: '200px'}}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ mb: 2, width: "200px" }}
+                    >
                         Sign up
                     </Button>
-                    <Button variant="outlined" color="secondary" sx={{  width: '200px'}}>
+                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}>
                         Try as Guest
                     </Button>
-                    
                 </Box>
             </Grid>
         </Grid>
