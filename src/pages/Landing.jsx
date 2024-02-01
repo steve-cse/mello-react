@@ -39,7 +39,7 @@ export default function Landing() {
                     <img
                         src="/logo.png"
                         alt="mello_logo"
-                        style={{ width: "140px", marginBottom: "20px" }}
+                        style={{ width: "188px", marginBottom: "20px" }}
                     />
                     <Typography
                         component="h1"
