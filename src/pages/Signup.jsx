@@ -87,7 +87,7 @@ function Signup() {
                         <Grid container justifyContent="flex-end">
                             
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="#" variant="body2" color="secondary">
                                     {"Already have an account? Log in"}
                                 </Link>
                             </Grid>

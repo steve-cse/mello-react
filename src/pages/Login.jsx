@@ -76,12 +76,12 @@ function Login() {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
+                                <Link href="#" variant="body2" color="secondary">
                                     Forgot password?
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="#" variant="body2" color="secondary">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

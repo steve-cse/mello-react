@@ -50,9 +50,9 @@ export default function Landing() {
                     >
                         Welcome to Mello
                     </Typography>
-                    <Typography variant="h6" sx={{ mb: 4, fontStyle: "italic" }}>
+                    <Typography variant="h6" sx={{ mb: 4,  }}>
                         {" "}
-                        Your Companion for Mental Health
+                        “ Your Companion for Mental Health ”
                     </Typography>
                     <Button
                         variant="contained"
