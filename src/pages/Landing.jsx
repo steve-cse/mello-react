@@ -6,7 +6,9 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
+import {useNavigate } from "react-router-dom";
 export default function Landing() {
+    const navigate = useNavigate();
     return (
         <Grid container component="main" sx={{ height: "100vh" }}>
             <CssBaseline />
@@ -56,6 +58,7 @@ export default function Landing() {
                         variant="contained"
                         color="primary"
                         sx={{ mb: 2, width: "200px" }}
+                        onClick={() => navigate("/login")}
                     >
                         Log in
                     </Button>
@@ -63,10 +66,11 @@ export default function Landing() {
                         variant="contained"
                         color="primary"
                         sx={{ mb: 2, width: "200px" }}
+                        onClick={() => navigate("/signup")}
                     >
                         Sign up
                     </Button>
-                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}>
+                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}  onClick={() => navigate("/chat")}>
                         Try as Guest
                     </Button>
                 </Box>
