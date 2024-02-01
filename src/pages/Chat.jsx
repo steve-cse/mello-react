@@ -21,7 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
 import GitHubIcon from "@mui/icons-material/GitHub";
-
+import Paper from "@mui/material/Paper";
 const drawerWidth = 240;
 export default function ResponsiveDrawer() {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -77,6 +77,7 @@ export default function ResponsiveDrawer() {
           },
           display: { xs: "block", sm: "none" },
         }}
+        PaperProps={{ elevation: 1 }}
       >
         <Toolbar />
         <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
@@ -97,8 +98,10 @@ export default function ResponsiveDrawer() {
               }
               key={text}
               disablePadding
+              
             >
               <ListItemButton
+              disableRipple
                 selected={selectedIndex === index}
                 onClick={(event) => handleListItemClick(event, index)}
               >
@@ -119,13 +122,14 @@ export default function ResponsiveDrawer() {
           },
           display: { xs: "none", sm: "block" },
         }}
+        PaperProps={{ elevation: 1 }}
       >
         <Toolbar />
         <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
           New Chat
         </Button>
 
-        <List>
+        <List >
           {[
             "Previous Chat 1",
             "Previous Chat 2",
@@ -134,6 +138,7 @@ export default function ResponsiveDrawer() {
           ].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton
+                disableRipple
                 selected={selectedIndex === index}
                 onClick={(event) => handleListItemClick(event, index)}
               >
@@ -146,7 +151,7 @@ export default function ResponsiveDrawer() {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 2 }}>
         <Toolbar />
         {ChatMessages.map((message, index) => (
           <Box
@@ -156,7 +161,11 @@ export default function ResponsiveDrawer() {
             justifyContent={message.user ? "flex-end" : "flex-start"}
           >
             {!message.user && (
-              <Avatar sx={{ ml: 1 }} alt="mello_avatar" src="/mello_avatar.webp">
+              <Avatar
+                sx={{ ml: 1 }}
+                alt="mello_avatar"
+                src="/mello_avatar.webp"
+              >
                 B
               </Avatar>
             )}
@@ -188,7 +197,7 @@ export default function ResponsiveDrawer() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
-                  <IconButton  aria-label="speak">
+                  <IconButton aria-label="speak">
                     <MicIcon />
                   </IconButton>
                 </InputAdornment>

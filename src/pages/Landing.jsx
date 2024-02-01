@@ -26,7 +26,7 @@ export default function Landing() {
                     backgroundPosition: "center",
                 }}
             />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={0} square>
+            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={1} square>
                 <Box
                     sx={{
                         my: 8,
