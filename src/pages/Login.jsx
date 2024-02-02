@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,14 +9,45 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
+
+import { supabaseClient } from '../config/supabase'
 function Login() {
-    const handleSubmit = (event) => {
+    const [session, setSession] = useState(null)
+    const [loading, setLoading] = useState(false);
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    useEffect(() => {
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+        })
+
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+    }, [])
+
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get("email"),
-            password: data.get("password"),
-        });
+        const email = emailRef.current.value;
+        const password = passwordRef.current.value;
+        setLoading(true);
+        try {
+            const { error } = await supabaseClient.auth.signInWithPassword({
+                email, password
+            })
+            if (error) throw error
+            //navigate("/");
+            console.log("Auth Success")
+        } catch (err) {
+            console.log(err.message);
+        } finally {
+            setLoading(false);
+        }
+
+
+
     };
     return (
         <Paper elevation={1} sx={{ display: "flex", height: "100vh" }}>
@@ -53,6 +84,7 @@ function Login() {
                             label="Email Address"
                             name="email"
                             autoComplete="email"
+                            inputRef={emailRef}
                             autoFocus
                         />
                         <TextField
@@ -64,6 +96,7 @@ function Login() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            inputRef={passwordRef}
                         />
 
                         <Button

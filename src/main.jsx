@@ -8,6 +8,8 @@ import Landing from "./pages/Landing.jsx";
 import Chat from "./pages/Chat.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import { AuthProvider } from "./contexts/AuthContext.jsx";
+
 
 let theme = createTheme({
   palette: {
@@ -42,7 +44,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
+    <AuthProvider>
       <RouterProvider router={router} />
+      </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

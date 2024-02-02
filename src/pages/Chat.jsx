@@ -22,6 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import Paper from "@mui/material/Paper";
+import StyledBadge from "../components/StyledBadge";
 const drawerWidth = 240;
 export default function ResponsiveDrawer() {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -98,10 +99,9 @@ export default function ResponsiveDrawer() {
               }
               key={text}
               disablePadding
-              
             >
               <ListItemButton
-              disableRipple
+                disableRipple
                 selected={selectedIndex === index}
                 onClick={(event) => handleListItemClick(event, index)}
               >
@@ -129,7 +129,7 @@ export default function ResponsiveDrawer() {
           New Chat
         </Button>
 
-        <List >
+        <List>
           {[
             "Previous Chat 1",
             "Previous Chat 2",
@@ -161,13 +161,17 @@ export default function ResponsiveDrawer() {
             justifyContent={message.user ? "flex-end" : "flex-start"}
           >
             {!message.user && (
-              <Avatar
-                sx={{ ml: 1 }}
-                alt="mello_avatar"
-                src="/mello_avatar.png"
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
               >
-                B
-              </Avatar>
+                <Avatar
+                  sx={{ ml: 1 }}
+                  alt="mello_avatar"
+                  src="/mello_avatar.webp"
+                />
+              </StyledBadge>
             )}
 
             <Typography
