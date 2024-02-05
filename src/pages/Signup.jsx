@@ -1,4 +1,5 @@
-import React from "react";
+import React,{ useState} from "react";
+import { useForm } from "react-hook-form";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,15 +10,34 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
+import Alert from "@mui/material/Alert"; // Import Alert component from Material-UI
+import { supabaseClient } from '../config/supabase';
+
 function Signup() {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get("email"),
-            password: data.get("password"),
-        });
+    const { register, handleSubmit, formState: { errors }, getValues,reset  } = useForm();
+    const [loading, setLoading] = useState(false);
+    const [loginError, setSignupError] = useState(null);
+    const [signupSuccess, setSignupSuccess] = useState(null);
+    const onSubmit = async (data) => {
+        setLoading(true);
+        try {
+            const { error } = await supabaseClient.auth.signUp({
+                email: data.email,
+                password: data.password
+            });
+            if (error) throw error;
+            console.log("Sign up Success");
+            setSignupSuccess("Sign up Successful");
+            setSignupError(null); // Clear any previous login errors
+            reset(); // Clear the form fields
+        } catch (err) {
+            setSignupError(err.message);
+            setSignupSuccess(null);
+        } finally {
+            setLoading(false);
+        }
     };
+
     return (
         <Paper elevation={1} sx={{ display: "flex", height: "100vh" }}>
             <Container component="main" maxWidth="xs">
@@ -37,11 +57,21 @@ function Signup() {
                         M
                     </Avatar>
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
-                    Create your Account
+                        Create your Account
                     </Typography>
+                    {signupSuccess && (
+                        <Alert severity="success" sx={{ mt: 2 }}>
+                            {signupSuccess}
+                        </Alert>
+                    )}
+                    {loginError && ( // Conditionally render the Alert component if loginError exists
+                        <Alert severity="error" sx={{ mt: 2 }}>
+                            {loginError}
+                        </Alert>
+                    )}
                     <Box
                         component="form"
-                        onSubmit={handleSubmit}
+                        onSubmit={handleSubmit(onSubmit)}
                         noValidate
                         sx={{ mt: 1 }}
                     >
@@ -54,6 +84,15 @@ function Signup() {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            {...register("email", {
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^\S+@\S+$/i,
+                                    message: "Invalid email address"
+                                }
+                            })}
+                            error={!!errors.email}
+                            helperText={errors.email && errors.email.message}
                         />
                         <TextField
                             margin="normal"
@@ -64,16 +103,30 @@ function Signup() {
                             type="password"
                             id="password"
                             autoComplete="new-password"
+                            {...register("password", {
+                                required: "Password is required",
+                                minLength: {
+                                    value: 8,
+                                    message: "Password must be at least 8 characters long"
+                                }
+                            })}
+                            error={!!errors.password}
+                            helperText={errors.password && errors.password.message}
                         />
-                         <TextField
+                        <TextField
                             margin="normal"
                             required
                             fullWidth
-                            name="password-confirmation"
+                            name="password_confirmation"
                             label="Confirm Password"
                             type="password"
-                            id="password-confirmation"
+                            id="password_confirmation"
                             autoComplete="new-password"
+                            {...register("password_confirmation", {
+                                validate: value => value === getValues('password') || 'The passwords do not match'
+                            })}
+                            error={!!errors.password_confirmation}
+                            helperText={errors.password_confirmation && errors.password_confirmation.message}
                         />
 
                         <Button
@@ -81,11 +134,11 @@ function Signup() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            disabled={loading}
                         >
                             Sign Up
                         </Button>
                         <Grid container justifyContent="flex-end">
-                            
                             <Grid item>
                                 <Link href="#" variant="body2" color="secondary">
                                     {"Already have an account? Log in"}
@@ -100,4 +153,4 @@ function Signup() {
 
 }
 
-export default Signup
+export default Signup;
