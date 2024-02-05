@@ -9,7 +9,8 @@ import Chat from "./pages/Chat.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
-
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ProtectedRoute from "./components/ProtectedRoute"
 
 let theme = createTheme({
   palette: {
@@ -29,16 +30,20 @@ const router = createBrowserRouter([
     element: <Landing />,
   },
   {
-    path: "/chat",
-    element: <Chat />,
+    path: "/chat", 
+    element: <ProtectedRoute>  <Chat /> </ProtectedRoute>
   },
   {
     path: "/login",
-    element: <Login/>
+    element: <Login/> 
   },
   {
     path: "/signup",
     element:<Signup/>
+  },
+  {
+    path: "/forgot-password",
+    element:<ForgotPassword/>
   }
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

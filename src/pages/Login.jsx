@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,46 +10,34 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
+import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
+import { supabaseClient } from '../config/supabase';
 
-import { supabaseClient } from '../config/supabase'
 function Login() {
-    const [session, setSession] = useState(null)
+    const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(false);
-    const emailRef = useRef();
-    const passwordRef = useRef();
-    useEffect(() => {
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-        })
-
-        supabaseClient.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
-    }, [])
-
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const email = emailRef.current.value;
-        const password = passwordRef.current.value;
+    const [loginError, setLoginError] = useState(null);
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const navigate = useNavigate();
+    const onSubmit = async (data) => {
         setLoading(true);
         try {
             const { error } = await supabaseClient.auth.signInWithPassword({
-                email, password
-            })
-            if (error) throw error
-            //navigate("/");
-            console.log("Auth Success")
+                email: data.email,
+                password: data.password
+            });
+            if (error) throw error;
+            console.log("Auth Success");
+            setLoginError(null); // Clear any previous login errors
+            navigate("/chat");
         } catch (err) {
-            console.log(err.message);
+            setLoginError(err.message);
         } finally {
             setLoading(false);
         }
-
-
-
     };
+
     return (
         <Paper elevation={1} sx={{ display: "flex", height: "100vh" }}>
             <Container component="main" maxWidth="xs">
@@ -70,9 +59,10 @@ function Login() {
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
                         Welcome Back
                     </Typography>
+                    {loginError && <Alert severity="error" sx={{ mt: 1 }}>{loginError}</Alert>}
                     <Box
                         component="form"
-                        onSubmit={handleSubmit}
+                        onSubmit={handleSubmit(onSubmit)}
                         noValidate
                         sx={{ mt: 1 }}
                     >
@@ -84,8 +74,10 @@ function Login() {
                             label="Email Address"
                             name="email"
                             autoComplete="email"
-                            inputRef={emailRef}
                             autoFocus
+                            {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
+                            error={!!errors.email}
+                            helperText={errors.email && "Email is required"}
                         />
                         <TextField
                             margin="normal"
@@ -96,7 +88,9 @@ function Login() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                            inputRef={passwordRef}
+                            {...register("password", { required: true })}
+                            error={!!errors.password}
+                            helperText={errors.password && "Password is required"}
                         />
 
                         <Button
@@ -104,17 +98,18 @@ function Login() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            disabled={loading}
                         >
                             Login
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2" color="secondary">
+                                <Link onClick={() => navigate('/forgot-password')} underline="hover"  variant="body2" color="secondary" sx={{ "cursor": "pointer" }}>
                                     Forgot password?
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2" color="secondary">
+                                <Link onClick={() => navigate('/signup')} underline="hover" variant="body2" color="secondary" sx={{ "cursor": "pointer" }}>
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

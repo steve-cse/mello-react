@@ -23,6 +23,10 @@ import Button from "@mui/material/Button";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import Paper from "@mui/material/Paper";
 import StyledBadge from "../components/StyledBadge";
+import { supabaseClient } from '../config/supabase';
+
+
+
 const drawerWidth = 240;
 export default function ResponsiveDrawer() {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -36,6 +40,19 @@ export default function ResponsiveDrawer() {
     setMobileOpen(!mobileOpen);
   };
 
+  const Logout = async () => {
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.log('Error occurred during logout:', error.message);
+    }
+  }
+
+
+  
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -59,9 +76,11 @@ export default function ResponsiveDrawer() {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Mello
           </Typography>
+
           <IconButton href="https://github.com/steve-cse/mello-react">
             <GitHubIcon />
           </IconButton>
+          <Button variant="contained" onClick={Logout} >Logout</Button>
         </Toolbar>
       </AppBar>
       <Drawer
