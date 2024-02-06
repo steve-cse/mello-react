@@ -19,7 +19,7 @@ function Signup() {
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors }, getValues } = useForm();
     const [loading, setLoading] = useState(false);
-    const [loginError, setSignupError] = useState(null);
+    const [signupError, setSignupError] = useState(null);
     const [signupSuccess, setSignupSuccess] = useState(null);
     const onSubmit = async (data) => {
         setLoading(true);
@@ -70,9 +70,9 @@ function Signup() {
                             {signupSuccess}
                         </Alert>
                     )}
-                    {loginError && ( // Conditionally render the Alert component if loginError exists
+                    {signupError && ( // Conditionally render the Alert component if signupError exists
                         <Alert severity="error" sx={{ mt: 2 }}>
-                            {loginError}
+                            {signupError}
                         </Alert>
                     )}
                     <Box
