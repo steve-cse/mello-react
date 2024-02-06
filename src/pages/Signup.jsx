@@ -32,6 +32,7 @@ function Signup() {
             console.log("Sign up Success");
             setSignupSuccess("Sign up Successful. Redirecting to Login....");
             setSignupError(null); // Clear any previous login errors
+            setLoading(true);
             setTimeout(function () {
                 navigate('/login')
             }, 5000);
@@ -39,7 +40,6 @@ function Signup() {
         } catch (err) {
             setSignupError(err.message);
             setSignupSuccess(null);
-        } finally {
             setLoading(false);
         }
     };
@@ -146,7 +146,7 @@ function Signup() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link component={RouterLink} to="/login" variant="body2" color="secondary">
+                                <Link component={RouterLink} to="/login" variant="body2" color="secondary" underline="hover">
                                     {"Already have an account? Log in"}
                                 </Link>
                             </Grid>

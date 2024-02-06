@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -11,28 +11,41 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { supabaseClient } from '../config/supabase';
 
-function Login() {
-    const [session, setSession] = useState(null);
+function UpdatePassword() {
     const [loading, setLoading] = useState(false);
-    const [loginError, setLoginError] = useState(null);
+    const [updateError, setUpdateError] = useState(null);
+    const [updateSuccess, setUpdateSuccess] = useState(null);
+    const [linkError, setLinkError] = useState(null);
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const location = useLocation();
     const navigate = useNavigate();
+    useEffect(() => {
+        console.log(location.hash);
+        const params = new URLSearchParams(location.hash);
+        const errorMessage = params.get('error_description');
+        if (errorMessage) {
+            setLinkError(errorMessage);
+        }
+    }, [location.hash]);
+
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const { error } = await supabaseClient.auth.signInWithPassword({
-                email: data.email,
-                password: data.password
+            const { error } = await supabaseClient.auth.updateUser({
+                password: data.newPassword
             });
             if (error) throw error;
-            console.log("Auth Success");
-            setLoginError(null); // Clear any previous login errors
-            navigate("/chat");
+            setUpdateError(null); // Clear any previous update errors
+            setUpdateSuccess("Password updated. Redirecting to Login....")
+            console.log("Password Update Success");
+            setTimeout(function () {
+                navigate('/login')
+            }, 5000);
         } catch (err) {
-            setLoginError(err.message);
+            setUpdateError(err.message);
         } finally {
             setLoading(false);
         }
@@ -57,9 +70,14 @@ function Login() {
                         M
                     </Avatar>
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
-                        Welcome Back
+                        Update Password
                     </Typography>
-                    {loginError && <Alert severity="error" sx={{ mt: 1 }}>{loginError}</Alert>}
+                    {updateSuccess && (
+                        <Alert severity="success" sx={{ mt: 2 }}>
+                            {updateSuccess}
+                        </Alert>
+                    )}
+                    {updateError && <Alert severity="error" sx={{ mt: 1 }}>{updateError}</Alert>}
                     <Box
                         component="form"
                         onSubmit={handleSubmit(onSubmit)}
@@ -70,46 +88,33 @@ function Login() {
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
-                            error={!!errors.email}
-                            helperText={errors.email && "Email is required"}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
+                            name="newPassword"
+                            label="New Password"
                             type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            {...register("password", { required: true })}
-                            error={!!errors.password}
-                            helperText={errors.password && "Password is required"}
+                            id="newPassword"
+                            autoComplete="new-password"
+                            {...register("newPassword", { required: true, minLength: 6 })}
+                            error={!!errors.newPassword}
+                            helperText={errors.newPassword && "Password must be at least 6 characters"}
+                            disabled={linkError}
                         />
-
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                            disabled={loading}
+                            sx={{ mt: 2, mb: 2 }}
+                            disabled={loading || linkError}
                         >
-                            Login
+                            Update Password
                         </Button>
-                        <Grid container>
+                        <Grid container direction="column" alignItems="center">
                             <Grid item xs>
-                            <Link component={RouterLink} to="/forgot-password" variant="body2" color="secondary" underline="hover">
-                                    {"Forgot password?"}
+                                <Link component={RouterLink} to="/login" variant="body2" color="secondary" underline="hover">
+                                    {"Remember your password? Log In"}
                                 </Link>
                             </Grid>
-                            <Grid item>
-                                <Link  component={RouterLink} to="/signup" variant="body2" color="secondary" underline="hover">
+                            <Grid item sx={{ mt: 1 }}>
+                                <Link component={RouterLink} to="/signup" variant="body2" color="secondary" underline="hover">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>
@@ -121,4 +126,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default UpdatePassword;
