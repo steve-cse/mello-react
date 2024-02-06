@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { supabaseClient } from '../config/supabase';
 
 function Login() {
@@ -104,12 +104,12 @@ function Login() {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link onClick={() => navigate('/forgot-password')} underline="hover"  variant="body2" color="secondary" sx={{ "cursor": "pointer" }}>
-                                    Forgot password?
+                            <Link component={RouterLink} to="/forgot-password" variant="body2" color="secondary">
+                                    {"Forgot password?"}
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link onClick={() => navigate('/signup')} underline="hover" variant="body2" color="secondary" sx={{ "cursor": "pointer" }}>
+                                <Link  component={RouterLink} to="/signup" variant="body2" color="secondary">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

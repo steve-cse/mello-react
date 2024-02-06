@@ -1,4 +1,4 @@
-import React,{ useState} from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -12,9 +12,12 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert"; // Import Alert component from Material-UI
 import { supabaseClient } from '../config/supabase';
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
 
 function Signup() {
-    const { register, handleSubmit, formState: { errors }, getValues,reset  } = useForm();
+    const navigate = useNavigate();
+    const { register, handleSubmit, formState: { errors }, getValues } = useForm();
     const [loading, setLoading] = useState(false);
     const [loginError, setSignupError] = useState(null);
     const [signupSuccess, setSignupSuccess] = useState(null);
@@ -27,9 +30,12 @@ function Signup() {
             });
             if (error) throw error;
             console.log("Sign up Success");
-            setSignupSuccess("Sign up Successful");
+            setSignupSuccess("Sign up Successful. Redirecting to Login....");
             setSignupError(null); // Clear any previous login errors
-            reset(); // Clear the form fields
+            setTimeout(function () {
+                navigate('/login')
+            }, 5000);
+
         } catch (err) {
             setSignupError(err.message);
             setSignupSuccess(null);
@@ -140,7 +146,7 @@ function Signup() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2" color="secondary">
+                                <Link component={RouterLink} to="/login" variant="body2" color="secondary">
                                     {"Already have an account? Log in"}
                                 </Link>
                             </Grid>
