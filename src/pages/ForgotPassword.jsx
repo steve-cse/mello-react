@@ -32,7 +32,6 @@ function ForgotPassword() {
       setResetError(null); // Clear any previous reset errors
       setResetSuccess("Check your inbox for further instructions.")
       console.log("Reset Password Success");
-      // Optionally, you can redirect the user to a confirmation page
     } catch (err) {
       setResetError(err.message);
     } finally {

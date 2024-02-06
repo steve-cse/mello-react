@@ -32,7 +32,6 @@ function Signup() {
             console.log("Sign up Success");
             setSignupSuccess("Sign up Successful. Redirecting to Login....");
             setSignupError(null); // Clear any previous login errors
-            setLoading(true);
             setTimeout(function () {
                 navigate('/login')
             }, 5000);
