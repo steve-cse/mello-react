@@ -69,7 +69,7 @@ export default function Landing() {
                     >
                         Sign up
                     </Button>
-                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}  onClick={() => navigate("/chat")}>
+                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}  onClick={() => navigate("/guest")}>
                         Try as Guest
                     </Button>
                 </Box>
