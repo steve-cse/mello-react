@@ -23,6 +23,9 @@ import Button from "@mui/material/Button";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import Paper from "@mui/material/Paper";
 import StyledBadge from "../components/StyledBadge";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 function Guest() {
     const drawerWidth = 240;
     const [selectedIndex, setSelectedIndex] = useState(null);
@@ -35,7 +38,15 @@ function Guest() {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
-
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+        setSelectedIndex(null)
+    };
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -95,12 +106,8 @@ function Guest() {
                         "Previous Chat 4",
                     ].map((text, index) => (
                         <ListItem
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="more">
-                                    <MoreHorizIcon />
-                                </IconButton>
-                            }
-                            key={text}
+
+                            key={index}
                             disablePadding
                         >
                             <ListItemButton
@@ -109,6 +116,20 @@ function Guest() {
                                 onClick={(event) => handleListItemClick(event, index)}
                             >
                                 <ListItemText primary={text} />
+                                <IconButton edge="end" onClick={handleClick}>
+                                    <MoreHorizIcon />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={open && selectedIndex === index}
+                                    onClose={handleClose}
+                                >
+
+                                    <MenuItem>Download</MenuItem>
+                                    <MenuItem>Rename</MenuItem>
+                                    <MenuItem >Delete</MenuItem>
+
+                                </Menu>
                             </ListItemButton>
                         </ListItem>
                     ))}
@@ -139,16 +160,27 @@ function Guest() {
                         "Previous Chat 3",
                         "Previous Chat 5",
                     ].map((text, index) => (
-                        <ListItem key={text} disablePadding>
+                        <ListItem key={index} disablePadding>
                             <ListItemButton
                                 disableRipple
                                 selected={selectedIndex === index}
                                 onClick={(event) => handleListItemClick(event, index)}
                             >
                                 <ListItemText primary={text} />
-                                <IconButton edge="end">
+                                <IconButton edge="end" onClick={handleClick}>
                                     <MoreHorizIcon />
                                 </IconButton>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={open && selectedIndex === index}
+                                    onClose={handleClose}
+                                >
+
+                                    <MenuItem>Download</MenuItem>
+                                    <MenuItem>Rename</MenuItem>
+                                    <MenuItem >Delete</MenuItem>
+
+                                </Menu>
                             </ListItemButton>
                         </ListItem>
                     ))}
