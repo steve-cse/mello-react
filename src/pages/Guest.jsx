@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ChatMessages from "../components/ChatMessages";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -26,19 +26,22 @@ import StyledBadge from "../components/StyledBadge";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import OpenAI from 'openai';
 function Guest() {
     const drawerWidth = 240;
-    const [selectedIndex, setSelectedIndex] = useState(null);
-
+    // required states
+    const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const promptRef = useRef();
+    const [messages, setMessages] = useState([]);
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
-    const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
-    const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -47,6 +50,64 @@ function Guest() {
         setAnchorEl(null);
         setSelectedIndex(null)
     };
+
+    const handleSend = async (message) => {
+        const newMessage = {
+            message,
+            sender: "user"
+        };
+
+        const newMessages = [...messages, newMessage];
+
+        setMessages(newMessages);
+
+        
+
+        await processMessageToChatGPT(newMessages);
+    };
+
+    async function processMessageToChatGPT(chatMessages) { // messages is an array of messages
+        // Format messages for chatGPT API
+        // API is expecting objects in format of { role: "user" or "assistant", "content": "message here"}
+        // So we need to reformat
+
+        let apiMessages = chatMessages.map((messageObject) => {
+            let role = "";
+            if (messageObject.sender === "MelloGPT") {
+                role = "assistant";
+            } else {
+                role = "user";
+            }
+            console.log(messageObject)
+            return { role: role, content: messageObject.message }
+        });
+
+
+        const apiRequestBody = {
+            "model": "TheBloke/MelloGPT-AWQ",
+            "temperature": 0.9,
+            "messages": [...apiMessages]
+        }
+
+        await fetch("https://dummy.net/v1/chat/completions",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(apiRequestBody)
+            }).then((data) => {
+                return data.json();
+            }).then((data) => {
+                console.log(data.choices[0].message.content);
+                setMessages([...chatMessages, {
+                    message: data.choices[0].message.content,
+                    sender: "MelloGPT"
+                }]);
+                console.log(messages)
+            });
+    }
+
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -186,53 +247,54 @@ function Guest() {
                     ))}
                 </List>
             </Drawer>
-            <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 2 }}>
-                <Toolbar />
-                {ChatMessages.map((message, index) => (
-                    <Box
-                        key={index}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent={message.user ? "flex-end" : "flex-start"}
-                    >
-                        {!message.user && (
-                            <StyledBadge
-                                overlap="circular"
-                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                                variant="dot"
-                            >
-                                <Avatar
-                                    sx={{ ml: 1 }}
-                                    alt="mello_avatar"
-                                    src="/mello_avatar.webp"
-                                />
-                            </StyledBadge>
-                        )}
-
-                        <Typography
-                            paragraph={true}
-                            sx={{
-                                backgroundColor: message.user ? "#6200EE" : "#d1d5db",
-                                color: message.user ? "#FFFFFF" : "#000000",
-                                borderRadius: "19px",
-                                padding: "10px",
-                                maxWidth: "100%",
-                                margin: "10px",
-                            }}
+            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%",    }}>
+                <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 2, overflowY: "auto"}}>
+                    <Toolbar />
+                    {messages.map((message, index) => (
+                        <Box
+                            key={index}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
                         >
-                            {message.text}
-                        </Typography>
-                        {message.user && <Avatar sx={{ mr: 1 }}>U</Avatar>}
-                    </Box>
-                ))}
+                            {message.sender !== "user" && (
+                                <StyledBadge
+                                    overlap="circular"
+                                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                    variant="dot"
+                                >
+                                    <Avatar
+                                        sx={{ ml: 1 }}
+                                        alt="mello_avatar"
+                                        src="/mello_avatar.webp"
+                                    />
+                                </StyledBadge>
+                            )}
 
-                <Box display="flex" alignItems="center" sx={{ mt: 2 }}>
+                            <Typography
+                                paragraph={true}
+                                sx={{
+                                    backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
+                                    color: message.sender === "user" ? "#FFFFFF" : "#000000",
+                                    borderRadius: "19px",
+                                    padding: "10px",
+                                    maxWidth: "100%",
+                                    margin: "10px",
+                                }}
+                            >
+                                {message.message}
+                            </Typography>
+                            {message.sender === "user" && <Avatar sx={{ mr: 1 }}>U</Avatar>}
+                        </Box>
+                    ))}
+                </Box>
+                <Box component={Paper} elevation={1} display="flex" alignItems="center" sx={{ p: 2, bgcolor:'transparent' }}>
                     <TextField
                         fullWidth
                         variant="outlined"
                         placeholder="Type a message"
+                        inputRef={promptRef}
                         sx={{ mr: 1 }}
-                        // InputProps={{ sx: { borderRadius: 4 } }}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="start">
@@ -244,11 +306,12 @@ function Guest() {
                             style: { borderRadius: 15 },
                         }}
                     />
-                    <IconButton>
+                    <IconButton onClick={() => handleSend(promptRef.current.value)}>
                         <SendIcon />
                     </IconButton>
                 </Box>
             </Box>
+
         </Box>
     )
 }
