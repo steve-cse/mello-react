@@ -61,7 +61,7 @@ function Guest() {
 
         setMessages(newMessages);
 
-        
+
 
         await processMessageToChatGPT(newMessages);
     };
@@ -85,7 +85,7 @@ function Guest() {
 
         const apiRequestBody = {
             "model": "TheBloke/MelloGPT-AWQ",
-            "temperature": 0.9,
+            "temperature": 0.3,
             "messages": [...apiMessages]
         }
 
@@ -247,8 +247,8 @@ function Guest() {
                     ))}
                 </List>
             </Drawer>
-            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%",    }}>
-                <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 2, overflowY: "auto"}}>
+            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
+                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 2, overflowY: "auto" }}>
                     <Toolbar />
                     {messages.map((message, index) => (
                         <Box
@@ -288,13 +288,12 @@ function Guest() {
                         </Box>
                     ))}
                 </Box>
-                <Box component={Paper} elevation={1} display="flex" alignItems="center" sx={{ p: 2, bgcolor:'transparent' }}>
+                <Box display="flex" alignItems="center" sx={{ p:2  }}>
                     <TextField
                         fullWidth
-                        variant="outlined"
                         placeholder="Type a message"
                         inputRef={promptRef}
-                        sx={{ mr: 1 }}
+                        sx={{ mr: 1}}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="start">
@@ -303,7 +302,7 @@ function Guest() {
                                     </IconButton>
                                 </InputAdornment>
                             ),
-                            style: { borderRadius: 15 },
+                            sx: { borderRadius: 4 },
                         }}
                     />
                     <IconButton onClick={() => handleSend(promptRef.current.value)}>
