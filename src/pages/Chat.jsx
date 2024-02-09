@@ -182,7 +182,7 @@ function Chat() {
                                 <Avatar
                                     sx={{ ml: 1 }}
                                     alt="mello_avatar"
-                                    src="/mello_avatar.webp"
+                                    src="/mello_new.jpg"
                                 />
                             </StyledBadge>
                         )}
