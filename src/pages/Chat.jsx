@@ -164,7 +164,7 @@ function Chat() {
                     ))}
                 </List>
             </Drawer>
-            <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 2 }}>
+            <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 1 }}>
                 <Toolbar />
                 {ChatMessages.map((message, index) => (
                     <Box
@@ -182,7 +182,7 @@ function Chat() {
                                 <Avatar
                                     sx={{ ml: 1 }}
                                     alt="mello_avatar"
-                                    src="/mello_new.jpg"
+                                    src="/mello_avatar.webp"
                                 />
                             </StyledBadge>
                         )}

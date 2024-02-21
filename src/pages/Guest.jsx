@@ -26,6 +26,7 @@ import StyledBadge from "../components/StyledBadge";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import OpenAI from 'openai';
 function Guest() {
     const drawerWidth = 240;
@@ -51,17 +52,28 @@ function Guest() {
         setSelectedIndex(null)
     };
 
-    const handleSend = async (message) => {
+    let [history, setHistory] = useState([]);
+
+
+
+
+    const handleSend = async (event, message) => {
+        event.preventDefault()
+        if (selectedIndex === null && history.length === 0) {
+            setHistory(prevHistory => [...prevHistory, message]);
+            setSelectedIndex(0)
+        }
+
+
         const newMessage = {
             message,
             sender: "user"
         };
 
+        promptRef.current.value = ''
         const newMessages = [...messages, newMessage];
 
         setMessages(newMessages);
-
-
 
         await processMessageToChatGPT(newMessages);
     };
@@ -106,6 +118,22 @@ function Guest() {
                 }]);
                 console.log(messages)
             });
+    }
+    const handleNewChat = () => {
+
+        if (messages.length === 0) {
+            console.log("New Chat already exists")
+        } else {
+            setHistory(prevHistory => {
+                const newHistory = [...prevHistory];
+                newHistory.unshift("New Chat");
+                return newHistory;
+            });
+            setSelectedIndex(0)
+            messages.length = 0
+        }
+
+
     }
 
 
@@ -156,16 +184,11 @@ function Guest() {
                 PaperProps={{ elevation: 1 }}
             >
                 <Toolbar />
-                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
+                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
                     New Chat
                 </Button>
                 <List>
-                    {[
-                        "Previous Chat 1",
-                        "Previous Chat 2",
-                        "Previous Chat 3",
-                        "Previous Chat 4",
-                    ].map((text, index) => (
+                    {history.map((text, index) => (
                         <ListItem
 
                             key={index}
@@ -210,17 +233,12 @@ function Guest() {
                 PaperProps={{ elevation: 1 }}
             >
                 <Toolbar />
-                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
+                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
                     New Chat
                 </Button>
 
                 <List>
-                    {[
-                        "Previous Chat 1",
-                        "Previous Chat 2",
-                        "Previous Chat 3",
-                        "Previous Chat 5",
-                    ].map((text, index) => (
+                    {history.map((text, index) => (
                         <ListItem key={index} disablePadding>
                             <ListItemButton
                                 disableRipple
@@ -248,7 +266,7 @@ function Guest() {
                 </List>
             </Drawer>
             <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
-                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 2, overflowY: "auto" }}>
+                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
                     <Toolbar />
                     {messages.map((message, index) => (
                         <Box
@@ -288,27 +306,30 @@ function Guest() {
                         </Box>
                     ))}
                 </Box>
-                <Box display="flex" alignItems="center" sx={{ p:2  }}>
-                    <TextField
-                        fullWidth
-                        placeholder="Type a message"
-                        inputRef={promptRef}
-                        sx={{ mr: 1}}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton aria-label="speak">
-                                        <MicIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                            sx: { borderRadius: 4 },
-                        }}
-                    />
-                    <IconButton onClick={() => handleSend(promptRef.current.value)}>
-                        <SendIcon />
-                    </IconButton>
-                </Box>
+                <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
+                    <Box display="flex" alignItems="center" sx={{ p: 2 }}>
+                        <TextField
+                            fullWidth
+                            autoComplete="off"
+                            placeholder="Type a message"
+                            inputRef={promptRef}
+                            sx={{ mr: 1 }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="start">
+                                        <IconButton aria-label="speak">
+                                            <MicIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                                sx: { borderRadius: 4 },
+                            }}
+                        />
+                        <IconButton type="submit">
+                            <SendIcon />
+                        </IconButton>
+                    </Box>
+                </form>
             </Box>
 
         </Box>
