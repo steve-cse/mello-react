@@ -35,7 +35,11 @@ function Guest() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const promptRef = useRef();
-    const [messages, setMessages] = useState([]);
+    const [chatData, setChatData] = useState({
+        history: [],
+        messages: []
+    });
+
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
@@ -43,27 +47,28 @@ function Guest() {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
         setSelectedIndex(null)
     };
 
-    let [history, setHistory] = useState([]);
-
-
-
-
     const handleSend = async (event, message) => {
         event.preventDefault()
-        if (selectedIndex === null && history.length === 0) {
-            setHistory(prevHistory => [...prevHistory, message]);
+        if (selectedIndex === null && chatData.history.length === 0) {
             setSelectedIndex(0)
+            setChatData(prevData => ({
+                ...prevData,
+                history: [message],
+                messages: [[]]
+            }));
         }
-
 
         const newMessage = {
             message,
@@ -71,29 +76,38 @@ function Guest() {
         };
 
         promptRef.current.value = ''
-        const newMessages = [...messages, newMessage];
 
-        setMessages(newMessages);
+        // Update messages array with the new message
+        const newMessages = [...chatData.messages];
 
-        await processMessageToChatGPT(newMessages);
+        // Check if the array at index 0 exists, if not, create it
+        if (!newMessages[selectedIndex || 0]) {
+            newMessages[selectedIndex || 0] = [];
+        }
+
+
+        // Add the new message to the messages array of the selected history
+        newMessages[selectedIndex || 0].push(newMessage);
+        // Update chatData with the updated messages array
+        setChatData(prevData => ({
+            ...prevData,
+            messages: newMessages,
+        }));
+
+        // const newMessages = [...chatData.messages, newMessage];
+        // setChatData(prevData => ({
+        //     ...prevData,
+        //     messages: newMessages
+        // }));
+        console.log(chatData)
+        // await processMessageToChatGPT(newMessages);
     };
 
-    async function processMessageToChatGPT(chatMessages) { // messages is an array of messages
-        // Format messages for chatGPT API
-        // API is expecting objects in format of { role: "user" or "assistant", "content": "message here"}
-        // So we need to reformat
-
+    async function processMessageToChatGPT(chatMessages) {
         let apiMessages = chatMessages.map((messageObject) => {
-            let role = "";
-            if (messageObject.sender === "MelloGPT") {
-                role = "assistant";
-            } else {
-                role = "user";
-            }
-            console.log(messageObject)
+            let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
             return { role: role, content: messageObject.message }
         });
-
 
         const apiRequestBody = {
             "model": "TheBloke/MelloGPT-AWQ",
@@ -101,39 +115,50 @@ function Guest() {
             "messages": [...apiMessages]
         }
 
-        await fetch("https://dummy.net/v1/chat/completions",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(apiRequestBody)
-            }).then((data) => {
-                return data.json();
-            }).then((data) => {
-                console.log(data.choices[0].message.content);
-                setMessages([...chatMessages, {
-                    message: data.choices[0].message.content,
-                    sender: "MelloGPT"
-                }]);
-                console.log(messages)
-            });
+        await fetch("https://dummy.net/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(apiRequestBody)
+        }).then((data) => {
+            return data.json();
+        }).then((data) => {
+            setChatData(prevData => ({
+                ...prevData,
+                messages: [
+                    ...prevData.messages,
+                    {
+                        message: data.choices[0].message.content,
+                        sender: "MelloGPT"
+                    }
+                ]
+            }));
+        });
     }
-    const handleNewChat = () => {
 
-        if (messages.length === 0) {
+    const handleNewChat = () => {
+        if (chatData.messages[selectedIndex] && chatData.messages[selectedIndex].length === 0) {
             console.log("New Chat already exists")
         } else {
-            setHistory(prevHistory => {
-                const newHistory = [...prevHistory];
-                newHistory.unshift("New Chat");
-                return newHistory;
-            });
-            setSelectedIndex(0)
-            messages.length = 0
+            // Clone the current messages array
+            const newMessages = [...chatData.messages];
+
+            // Insert a new empty array at the beginning for the new chat session
+            newMessages.unshift([]);
+
+            // Create a new chat session with the current history and updated messages
+            const newChatData = {
+                history: ["New Chat", ...chatData.history],
+                messages: newMessages,
+            };
+            setChatData(newChatData);
+            // setChatData(prevData => ({
+            //     history: ["New Chat", ...prevData.history],
+            //     messages: [[],chatData.messages],
+            // }));
+            setSelectedIndex(0);
         }
-
-
     }
 
 
@@ -188,7 +213,7 @@ function Guest() {
                     New Chat
                 </Button>
                 <List>
-                    {history.map((text, index) => (
+                    {chatData.history.map((text, index) => (
                         <ListItem
 
                             key={index}
@@ -238,7 +263,7 @@ function Guest() {
                 </Button>
 
                 <List>
-                    {history.map((text, index) => (
+                    {chatData.history.map((text, index) => (
                         <ListItem key={index} disablePadding>
                             <ListItemButton
                                 disableRipple
@@ -268,7 +293,7 @@ function Guest() {
             <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
                 <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
                     <Toolbar />
-                    {messages.map((message, index) => (
+                    {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
                         <Box
                             key={index}
                             display="flex"
@@ -317,7 +342,7 @@ function Guest() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
-                                        <IconButton aria-label="speak">
+                                        <IconButton aria-label="speak" onClick={() => { console.log(chatData.messages[selectedIndex]) }}>
                                             <MicIcon />
                                         </IconButton>
                                     </InputAdornment>
