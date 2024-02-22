@@ -65,8 +65,16 @@ function Guest() {
             setSelectedIndex(0)
             setChatData(prevData => ({
                 ...prevData,
-                history: [message],
-                messages: [[]]
+                history: [message]
+            }));
+        }
+
+        if (chatData.history[selectedIndex] === "New Chat") {
+            const updatedHistory = [...chatData.history]; // Create a copy of the history array
+            updatedHistory[selectedIndex] = message; // Replace the value at selectedIndex with message        
+            setChatData(prevData => ({
+                ...prevData,
+                history: updatedHistory
             }));
         }
 
