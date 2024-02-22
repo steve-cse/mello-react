@@ -33,6 +33,7 @@ function Guest() {
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [chatUpdated, setChatUpdated] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const promptRef = useRef();
     const [chatData, setChatData] = useState({
@@ -69,13 +70,14 @@ function Guest() {
             }));
         }
 
-        if (chatData.history[selectedIndex] === "New Chat") {
+        if ( !chatUpdated && chatData.history[selectedIndex] === "New Chat") {
             const updatedHistory = [...chatData.history]; // Create a copy of the history array
             updatedHistory[selectedIndex] = message; // Replace the value at selectedIndex with message        
             setChatData(prevData => ({
                 ...prevData,
                 history: updatedHistory
             }));
+            setChatUpdated(true)
         }
 
         const newMessage = {
@@ -166,6 +168,7 @@ function Guest() {
             //     messages: [[],chatData.messages],
             // }));
             setSelectedIndex(0);
+            setChatUpdated(false)
         }
     }
 
