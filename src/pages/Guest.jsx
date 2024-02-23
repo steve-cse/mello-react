@@ -36,10 +36,16 @@ function Guest() {
     const [chatUpdated, setChatUpdated] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const promptRef = useRef();
+    const scrollRef = useRef(null);
     const [chatData, setChatData] = useState({
         history: [],
         messages: []
     });
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+        }
+    }, [chatData.messages]);
 
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
@@ -70,7 +76,7 @@ function Guest() {
             }));
         }
 
-        if ( !chatUpdated && chatData.history[selectedIndex] === "New Chat") {
+        if (!chatUpdated && chatData.history[selectedIndex] === "New Chat") {
             const updatedHistory = [...chatData.history]; // Create a copy of the history array
             updatedHistory[selectedIndex] = message; // Replace the value at selectedIndex with message        
             setChatData(prevData => ({
@@ -110,22 +116,23 @@ function Guest() {
         //     messages: newMessages
         // }));
         console.log(chatData)
-        // await processMessageToChatGPT(newMessages);
+        await processMessageToMelloGPT(newMessages);
     };
 
-    async function processMessageToChatGPT(chatMessages) {
-        let apiMessages = chatMessages.map((messageObject) => {
+    async function processMessageToMelloGPT(chatMessages) {
+        let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
             let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
             return { role: role, content: messageObject.message }
         });
-
+        console.log("API messages: ")
+        console.log(apiMessages)
         const apiRequestBody = {
             "model": "TheBloke/MelloGPT-AWQ",
             "temperature": 0.3,
             "messages": [...apiMessages]
         }
 
-        await fetch("https://dummy.net/v1/chat/completions", {
+        await fetch("https://5i0p4d239zd0mg-8000.proxy.runpod.net/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -134,15 +141,17 @@ function Guest() {
         }).then((data) => {
             return data.json();
         }).then((data) => {
+            console.log(data)
+            const updatedMessages = [...chatMessages];
+            console.log(updatedMessages)
+            updatedMessages[selectedIndex || 0].push({
+                message: data.choices[0].message.content,
+                sender: "MelloGPT"
+            });
+
             setChatData(prevData => ({
                 ...prevData,
-                messages: [
-                    ...prevData.messages,
-                    {
-                        message: data.choices[0].message.content,
-                        sender: "MelloGPT"
-                    }
-                ]
+                messages: updatedMessages
             }));
         });
     }
@@ -341,6 +350,7 @@ function Guest() {
                             {message.sender === "user" && <Avatar sx={{ mr: 1 }}>U</Avatar>}
                         </Box>
                     ))}
+                    <div ref={scrollRef}></div>
                 </Box>
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
