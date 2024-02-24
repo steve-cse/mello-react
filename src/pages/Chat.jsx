@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ChatMessages from "../components/ChatMessages";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -23,30 +23,306 @@ import Button from "@mui/material/Button";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import Paper from "@mui/material/Paper";
 import StyledBadge from "../components/StyledBadge";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { deepOrange, deepPurple } from '@mui/material/colors';
+import FormControl from '@mui/material/FormControl';
+import OpenAI from 'openai';
 import { supabaseClient } from '../config/supabase';
+import { useAuth } from "../contexts/AuthContext";
 function Chat() {
     const drawerWidth = 240;
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const { session, user, signOut } = useAuth();
+    // required states
+    const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [chatUpdated, setChatUpdated] = useState(false);
+    const [chatSynced, setChatSynced] = useState(true);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const promptRef = useRef();
+    const scrollRef = useRef(null);
+
+    const [chatData, setChatData] = useState({
+        history: [],
+        messages: []
+    });
+
+
+
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+        }
+    }, [chatData.messages]);
+
+    useEffect(() => {
+
+        pushChatDataToSupabase(chatData, user.id)
+
+    }, [chatData]);
+
+    useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
 
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
-    const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const Logout = async () => {
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+
+
+    };
+    useEffect(() => {
+        // Fetch chat data from Supabase during initial component load
+        async function fetchChatData() {
+            try {
+                // Fetch chat data based on the user's session or userID
+                const fetchedData = await fetchChatDataFromSupabase(session.user.id);
+
+                // Update the chatData state with fetched data
+                if (fetchedData) {
+                    setChatSynced(true) //avoid double sync
+                    setChatData(fetchedData);
+                    console.log("Chat fetched from supabase")
+                }
+            } catch (error) {
+                console.error('Error fetching chat data:', error);
+            }
+        }
+
+        // Call the fetchChatData function when the component mounts
+        fetchChatData();
+        setSelectedIndex(0)
+
+    }, []);
+    async function fetchChatDataFromSupabase(supabaseUID) {
         try {
-            const { error } = await supabaseClient.auth.signOut();
+            const { data, error } = await supabaseClient
+                .from('chatdata')
+                .select()
+                .eq('supabase_uid', supabaseUID)
+                .single(); // Assuming each user has only one entry in the ChatData table
+
             if (error) {
                 throw error;
             }
+
+            if (data) {
+                // If data exists, populate the chatData object
+                const chatData = {
+                    history: data.history,
+                    messages: data.messages
+                };
+
+                return chatData;
+            } else {
+                // If no data found for the user, return null or handle accordingly
+                return null;
+            }
         } catch (error) {
-            console.log('Error occurred during logout:', error.message);
+            console.error('Error fetching chat data from Supabase:', error.message);
+            throw error;
         }
     }
+
+    const handleSend = async (event, message) => {
+        event.preventDefault()
+
+        if (chatData.history.length === 0) {
+            setSelectedIndex(0)
+            setChatData(prevData => ({
+                ...prevData,
+                history: [message]
+            }));
+        }
+
+        if (!chatUpdated && chatData.history[selectedIndex] === "New Chat") {
+            const updatedHistory = [...chatData.history]; // Create a copy of the history array
+            updatedHistory[selectedIndex] = message; // Replace the value at selectedIndex with message        
+            setChatData(prevData => ({
+                ...prevData,
+                history: updatedHistory
+            }));
+            setChatUpdated(true)
+        }
+
+        const newMessage = {
+            message,
+            sender: "user"
+        };
+
+        promptRef.current.value = ''
+
+        // Update messages array with the new message
+        const newMessages = structuredClone(chatData.messages); //create a deep copy
+
+        // Check if the array at index 0 exists, if not, create it
+        if (!newMessages[selectedIndex || 0]) {
+            newMessages[selectedIndex || 0] = [];
+        }
+
+
+        // Add the new message to the messages array of the selected history
+        newMessages[selectedIndex || 0].push(newMessage);
+        // Update chatData with the updated messages array
+        setChatData(prevData => ({
+            ...prevData,
+            messages: newMessages,
+        }));
+
+
+        console.log(chatData)
+        await processMessageToMelloGPT(newMessages);
+    };
+
+    async function processMessageToMelloGPT(chatMessages) {
+        try {
+            let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
+                let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
+                return { role: role, content: messageObject.message }
+            });
+            console.log("API messages: ")
+            console.log(apiMessages)
+            const apiRequestBody = {
+                "model": "TheBloke/MelloGPT-AWQ",
+                "temperature": 0.4,
+                "messages": [...apiMessages]
+            }
+
+            const response = await fetch("https://8azjnino1my1ww-8000.proxy.runpod.net/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(apiRequestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log(data)
+
+            const updatedMessages = [...chatMessages];
+            console.log(updatedMessages)
+            updatedMessages[selectedIndex || 0].push({
+                message: data.choices[0].message.content,
+                sender: "MelloGPT"
+            });
+
+            setChatData(prevData => ({
+                ...prevData,
+                messages: updatedMessages
+            }));
+            setChatSynced(false)
+        } catch (error) {
+            console.error('API Error:', error);
+            setChatSynced(true)
+
+        }
+    }
+
+
+    const handleNewChat = () => {
+        if (chatData.messages[selectedIndex] && chatData.messages[selectedIndex].length === 0) {
+            console.log("New Chat already exists")
+        } else {
+            // Clone the current messages array
+            const newMessages = [...chatData.messages];
+
+            // Insert a new empty array at the beginning for the new chat session
+            newMessages.unshift([]);
+
+            // Create a new chat session with the current history and updated messages
+            const newChatData = {
+                history: ["New Chat", ...chatData.history],
+                messages: newMessages,
+            };
+
+            setChatData(newChatData);
+            // setChatData(prevData => ({
+            //     history: ["New Chat", ...prevData.history],
+            //     messages: [[],chatData.messages],
+            // }));
+            setSelectedIndex(0);
+            setChatUpdated(false)
+        }
+    }
+    const handleDeleteChat = async (index) => {
+        try {
+            const updatedHistory = [...chatData.history];
+            updatedHistory.splice(index, 1); // Remove the chat from history
+
+            const updatedMessages = [...chatData.messages];
+            updatedMessages.splice(index, 1); // Remove the messages for the chat
+
+            // Update chatData with the updated history and messages
+            setChatData((prevData) => ({
+                ...prevData,
+                history: updatedHistory,
+                messages: updatedMessages,
+            }));
+
+            setChatSynced(false)
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+        }
+    };
+    const handleRenameChat = (index, newName) => {
+        try {
+            const updatedHistory = [...chatData.history];
+            updatedHistory[index] = newName;
+
+            setChatData((prevData) => ({
+                ...prevData,
+                history: updatedHistory,
+            }));
+
+            setChatSynced(false)
+        } catch (error) {
+            console.error('Error renaming chat:', error);
+        }
+    };
+    async function pushChatDataToSupabase(chatData, supabaseUID) {
+        if (chatSynced === false) {
+            try {
+
+                const { data, error } = await supabaseClient
+                    .from('chatdata')
+                    .update({
+                        supabase_uid: supabaseUID,
+                        history: chatData.history,
+                        messages: chatData.messages
+                    })
+                    .eq("supabase_uid", supabaseUID)
+
+                if (error) {
+                    throw error;
+                }
+
+                console.log('Chat data inserted successfully:', data);
+                return data;
+            } catch (error) {
+                console.error('Error inserting chat data:', error.message);
+                console.log(error)
+                throw error;
+            }
+        }
+    }
+
     return (
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
@@ -74,7 +350,7 @@ function Chat() {
                     <IconButton href="https://github.com/steve-cse/mello-react">
                         <GitHubIcon />
                     </IconButton>
-                    <Button variant="contained" onClick={Logout} >Logout</Button>
+                    <Button variant="contained" onClick={signOut} >Logout</Button>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -94,23 +370,14 @@ function Chat() {
                 PaperProps={{ elevation: 1 }}
             >
                 <Toolbar />
-                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
+                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
                     New Chat
                 </Button>
                 <List>
-                    {[
-                        "Previous Chat 1",
-                        "Previous Chat 2",
-                        "Previous Chat 3",
-                        "Previous Chat 4",
-                    ].map((text, index) => (
+                    {chatData.history.map((text, index) => (
                         <ListItem
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="more">
-                                    <MoreHorizIcon />
-                                </IconButton>
-                            }
-                            key={text}
+
+                            key={index}
                             disablePadding
                         >
                             <ListItemButton
@@ -119,6 +386,20 @@ function Chat() {
                                 onClick={(event) => handleListItemClick(event, index)}
                             >
                                 <ListItemText primary={text} />
+                                <IconButton edge="end" onClick={handleClick}>
+                                    <MoreHorizIcon />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={open && selectedIndex === index}
+                                    onClose={handleClose}
+                                >
+
+                                    <MenuItem>Download</MenuItem>
+                                    <MenuItem>Rename</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Delete"); await handleDeleteChat(selectedIndex); handleClose(); }} >Delete</MenuItem>
+
+                                </Menu>
                             </ListItemButton>
                         </ListItem>
                     ))}
@@ -138,95 +419,106 @@ function Chat() {
                 PaperProps={{ elevation: 1 }}
             >
                 <Toolbar />
-                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />}>
+                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
                     New Chat
                 </Button>
 
                 <List>
-                    {[
-                        "Previous Chat 1",
-                        "Previous Chat 2",
-                        "Previous Chat 3",
-                        "Previous Chat 5",
-                    ].map((text, index) => (
-                        <ListItem key={text} disablePadding>
+                    {chatData.history.map((text, index) => (
+                        <ListItem key={index} disablePadding>
                             <ListItemButton
                                 disableRipple
                                 selected={selectedIndex === index}
                                 onClick={(event) => handleListItemClick(event, index)}
                             >
                                 <ListItemText primary={text} />
-                                <IconButton edge="end">
+                                <IconButton edge="end" onClick={handleClick}>
                                     <MoreHorizIcon />
                                 </IconButton>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={open && selectedIndex === index}
+                                    onClose={handleClose}
+                                >
+
+                                    <MenuItem>Download</MenuItem>
+                                    <MenuItem>Rename</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Delete"); await handleDeleteChat(selectedIndex); handleClose(); }} >Delete</MenuItem>
+
+                                </Menu>
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
             </Drawer>
-            <Box component={Paper} elevation={1} sx={{ flexGrow: 1, p: 1 }}>
-                <Toolbar />
-                {ChatMessages.map((message, index) => (
-                    <Box
-                        key={index}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent={message.user ? "flex-end" : "flex-start"}
-                    >
-                        {!message.user && (
-                            <StyledBadge
-                                overlap="circular"
-                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                                variant="dot"
-                            >
-                                <Avatar
-                                    sx={{ ml: 1 }}
-                                    alt="mello_avatar"
-                                    src="/mello_avatar.webp"
-                                />
-                            </StyledBadge>
-                        )}
-
-                        <Typography
-                            paragraph={true}
-                            sx={{
-                                backgroundColor: message.user ? "#6200EE" : "#d1d5db",
-                                color: message.user ? "#FFFFFF" : "#000000",
-                                borderRadius: "19px",
-                                padding: "10px",
-                                maxWidth: "100%",
-                                margin: "10px",
-                            }}
+            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
+                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
+                    <Toolbar />
+                    {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
+                        <Box
+                            key={index}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
                         >
-                            {message.text}
-                        </Typography>
-                        {message.user && <Avatar sx={{ mr: 1 }}>U</Avatar>}
-                    </Box>
-                ))}
+                            {message.sender !== "user" && (
+                                <StyledBadge
+                                    overlap="circular"
+                                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                    variant="dot"
+                                >
+                                    <Avatar
+                                        sx={{ ml: 1 }}
+                                        alt="mello_avatar"
+                                        src="/mello_avatar.webp"
+                                    />
+                                </StyledBadge>
+                            )}
 
-                <Box display="flex" alignItems="center" sx={{ mt: 2 }}>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        placeholder="Type a message"
-                        sx={{ mr: 1 }}
-                        // InputProps={{ sx: { borderRadius: 4 } }}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton aria-label="speak">
-                                        <MicIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                            style: { borderRadius: 15 },
-                        }}
-                    />
-                    <IconButton>
-                        <SendIcon />
-                    </IconButton>
+                            <Typography
+                                paragraph={true}
+                                sx={{
+                                    backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
+                                    color: message.sender === "user" ? "#FFFFFF" : "#000000",
+                                    borderRadius: "19px",
+                                    padding: "10px",
+                                    maxWidth: "100%",
+                                    margin: "10px",
+                                }}
+                            >
+                                {message.message}
+                            </Typography>
+                            {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >{user.email.charAt(0).toUpperCase()}</Avatar>}
+                        </Box>
+                    ))}
+                    <div ref={scrollRef}></div>
                 </Box>
+                <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
+                    <Box display="flex" alignItems="center" sx={{ p: 2 }}>
+                        <TextField
+                            fullWidth
+                            autoComplete="off"
+                            placeholder="Type a message"
+                            inputRef={promptRef}
+                            sx={{ mr: 1 }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="start">
+                                        <IconButton aria-label="speak" onClick={() => { console.log(user) }}>
+                                            <MicIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                                sx: { borderRadius: 4 },
+                            }}
+                        />
+                        <IconButton type="submit">
+                            <SendIcon />
+                        </IconButton>
+                    </Box>
+                </form>
             </Box>
+
         </Box>
     )
 }

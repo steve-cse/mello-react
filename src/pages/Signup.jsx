@@ -21,17 +21,31 @@ function Signup() {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState(null);
     const [signupSuccess, setSignupSuccess] = useState(null);
-    const onSubmit = async (data) => {
+    async function pushEmptyChatData(supabaseUID) {
+        try {
+            await supabaseClient
+                .from('chatdata')
+                .insert({
+                    supabase_uid: supabaseUID,
+                    history: ["New Chat"],
+                    messages: []
+                });
+        } catch (error) {
+            console.error('Error pushing empty chat data:', error.message);
+        }
+    }
+    const onSubmit = async (info) => {
         setLoading(true);
         try {
-            const { error } = await supabaseClient.auth.signUp({
-                email: data.email,
-                password: data.password
+            const { data,error } = await supabaseClient.auth.signUp({
+                email: info.email,
+                password: info.password
             });
             if (error) throw error;
             console.log("Sign up Success");
             setSignupSuccess("Sign up Successful. Redirecting to Login....");
             setSignupError(null); // Clear any previous login errors
+            await pushEmptyChatData(data.session.user.id);
             setTimeout(function () {
                 navigate('/login')
             }, 5000);
