@@ -40,9 +40,10 @@ export default function Landing() {
                     }}
                 >
 
-                    <Avatar sx={{ mb: '20px', height: '85px', width: '85px' }} alt="mello_logo" src="/mello_avatar.png">
+                    {/* <Avatar sx={{ mb: '20px', height: '85px', width: '85px' }} alt="mello_logo" src="/logo.png" variant="rounded">
                         M
-                    </Avatar>
+                    </Avatar> */}
+                    <img src="/logo.png" alt="" width="100" style={{marginBottom:'25px'}} />
                     <Typography
                         component="h1"
                         variant="h3"

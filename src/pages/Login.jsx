@@ -50,12 +50,13 @@ function Login() {
                         alignItems: "center",
                     }}
                 >
-                    <Avatar
+                    {/* <Avatar
                         src="/mello_avatar.png"
                         sx={{ m: 1, height: "75px", width: "75px" }}
                     >
                         M
-                    </Avatar>
+                    </Avatar> */}
+                    <img src="/logo.png" alt="" width="100" style={{margin:'25px'}} />
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
                         Welcome Back
                     </Typography>

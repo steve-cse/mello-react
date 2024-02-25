@@ -31,6 +31,11 @@ import FormControl from '@mui/material/FormControl';
 import OpenAI from 'openai';
 import { supabaseClient } from '../config/supabase';
 import { useAuth } from "../contexts/AuthContext";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
@@ -48,7 +53,15 @@ function Chat() {
         messages: []
     });
 
+    const [deletedialogopen, setDeleteDialogOpen] = useState(false);
 
+    const handleDeleteDialogOpen = () => {
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -63,7 +76,7 @@ function Chat() {
     }, [chatData]);
 
     useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
-
+    useEffect(() => { console.log("Chat Synced changed to: " + chatSynced) }, [chatSynced])
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
@@ -298,6 +311,7 @@ function Chat() {
     };
     async function pushChatDataToSupabase(chatData, supabaseUID) {
         if (chatSynced === false) {
+            setChatSynced(true)
             try {
 
                 const { data, error } = await supabaseClient
@@ -314,6 +328,7 @@ function Chat() {
                 }
 
                 console.log('Chat data inserted successfully:', data);
+               
                 return data;
             } catch (error) {
                 console.error('Error inserting chat data:', error.message);
@@ -396,14 +411,15 @@ function Chat() {
                                 >
 
                                     <MenuItem>Download</MenuItem>
-                                    <MenuItem>Rename</MenuItem>
-                                    <MenuItem onClick={async () => { console.log("Delete"); await handleDeleteChat(selectedIndex); handleClose(); }} >Delete</MenuItem>
+                                    <MenuItem>Renamed</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
                                 </Menu>
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
+
             </Drawer>
             <Drawer
                 variant="permanent"
@@ -442,15 +458,37 @@ function Chat() {
                                 >
 
                                     <MenuItem>Download</MenuItem>
-                                    <MenuItem>Rename</MenuItem>
-                                    <MenuItem onClick={async () => { console.log("Delete"); await handleDeleteChat(selectedIndex); handleClose(); }} >Delete</MenuItem>
+                                    <MenuItem>Renamed</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
                                 </Menu>
                             </ListItemButton>
                         </ListItem>
+
                     ))}
+
                 </List>
+
             </Drawer>
+            <Dialog
+                open={deletedialogopen}
+                onClose={handleDeleteDialogClose}
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Delete chat?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        This will delete the chat: {chatData.history[selectedIndex]}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button  variant="contained" onClick={handleDeleteDialogClose}>Cancel</Button>
+                    <Button variant="contained" color="error" onClick={async () => { await handleDeleteChat(selectedIndex); handleDeleteDialogClose(); }}>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
                 <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
                     <Toolbar />
