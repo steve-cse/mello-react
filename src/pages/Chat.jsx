@@ -62,7 +62,15 @@ function Chat() {
     const handleDeleteDialogClose = () => {
         setDeleteDialogOpen(false);
     };
+    const [renamedialogopen, setRenameDialogOpen] = useState(false);
 
+    const handleRenameDialogOpen = () => {
+        setRenameDialogOpen(true);
+    };
+
+    const handleRenameDialogClose = () => {
+        setRenameDialogOpen(false);
+    };
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -294,21 +302,7 @@ function Chat() {
             console.error('Error deleting chat:', error);
         }
     };
-    const handleRenameChat = (index, newName) => {
-        try {
-            const updatedHistory = [...chatData.history];
-            updatedHistory[index] = newName;
 
-            setChatData((prevData) => ({
-                ...prevData,
-                history: updatedHistory,
-            }));
-
-            setChatSynced(false)
-        } catch (error) {
-            console.error('Error renaming chat:', error);
-        }
-    };
     async function pushChatDataToSupabase(chatData, supabaseUID) {
         if (chatSynced === false) {
             setChatSynced(true)
@@ -328,7 +322,7 @@ function Chat() {
                 }
 
                 console.log('Chat data inserted successfully:', data);
-               
+
                 return data;
             } catch (error) {
                 console.error('Error inserting chat data:', error.message);
@@ -411,7 +405,7 @@ function Chat() {
                                 >
 
                                     <MenuItem>Download</MenuItem>
-                                    <MenuItem>Renamed</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Renamed Chat"); handleRenameDialogOpen(); handleClose(); }} >Rename</MenuItem>
                                     <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
                                 </Menu>
@@ -458,7 +452,7 @@ function Chat() {
                                 >
 
                                     <MenuItem>Download</MenuItem>
-                                    <MenuItem>Renamed</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Renamed Chat"); handleRenameDialogOpen(); handleClose(); }} >Rename</MenuItem>
                                     <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
                                 </Menu>
@@ -483,9 +477,61 @@ function Chat() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button  variant="contained" onClick={handleDeleteDialogClose}>Cancel</Button>
+                    <Button variant="contained" onClick={handleDeleteDialogClose}>Cancel</Button>
                     <Button variant="contained" color="error" onClick={async () => { await handleDeleteChat(selectedIndex); handleDeleteDialogClose(); }}>
                         Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={renamedialogopen}
+                onClose={handleRenameDialogClose}
+                PaperProps={{
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+
+                        try {
+                            const updatedHistory = [...chatData.history];
+                            updatedHistory[selectedIndex] = formJson.new_name;
+
+                            setChatData((prevData) => ({
+                                ...prevData,
+                                history: updatedHistory,
+                            }));
+
+                            setChatSynced(false)
+                        } catch (error) {
+                            console.error('Error renaming chat:', error);
+                        }
+                        handleRenameDialogClose();
+                    },
+                }}
+            >
+                <DialogTitle>Rename this chat</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        You're about to rename this chat. Choose a new name that reflects
+                        the conversation's focus or purpose.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        label="Enter New Name"
+                        fullWidth
+                        variant="standard"
+                        name="new_name"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" onClick={handleRenameDialogClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="contained" type="submit">
+                        Rename
                     </Button>
                 </DialogActions>
             </Dialog>
