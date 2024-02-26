@@ -36,12 +36,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import PersonIcon from '@mui/icons-material/Person';
+import StopIcon from '@mui/icons-material/Stop';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
+import useSpeechRecognition from "../hooks/useSpeechRecognition";
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
+    const { text, startListening, stopListening, isListening, recognitionSupport } = useSpeechRecognition();
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -94,6 +96,16 @@ function Chat() {
         pushChatDataToSupabase(chatData, user.id)
 
     }, [chatData]);
+    useEffect(() => {
+        promptRef.current.value = text
+
+
+    }, [text]);
+    useEffect(() => {
+
+        console.log("Listening: " + isListening)
+
+    }, [isListening]);
 
     useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
     useEffect(() => { console.log("Chat Synced changed to: " + chatSynced) }, [chatSynced])
@@ -624,9 +636,17 @@ function Chat() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
-                                        <IconButton aria-label="speak" onClick={() => { console.log("Speaker ") }}>
-                                            <MicIcon />
-                                        </IconButton>
+                                        {recognitionSupport ? (
+                                            isListening ? (
+                                                <IconButton aria-label="stop listening" onClick={stopListening}>
+                                                    <StopIcon />
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton aria-label="start listening" onClick={startListening}>
+                                                    <MicIcon />
+                                                </IconButton>
+                                            )
+                                        ) : null}
                                     </InputAdornment>
                                 ),
                                 sx: { borderRadius: 4 },
@@ -678,6 +698,7 @@ function Chat() {
 
                 </DialogActions>
             </Dialog>
+
         </Box>
     )
 }
