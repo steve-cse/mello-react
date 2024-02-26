@@ -510,7 +510,7 @@ function Chat() {
                         This will delete the chat: {chatData.history[selectedIndex]}
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ mb: 2, mr: 1 }}>
                     <Button variant="contained" onClick={handleDeleteDialogClose}>Cancel</Button>
                     <Button variant="contained" color="error" onClick={async () => { await handleDeleteChat(selectedIndex); handleDeleteDialogClose(); }}>
                         Delete
@@ -641,17 +641,17 @@ function Chat() {
             <Dialog PaperProps={{ elevation: 1 }} open={openSettingsModal} onClose={handleCloseSettingsModal}>
                 <DialogTitle>Account Settings</DialogTitle>
                 <IconButton
-          aria-label="close"
-          onClick={handleCloseSettingsModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-         
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+                    aria-label="close"
+                    onClick={handleCloseSettingsModal}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
                 <DialogContent>
                     <DialogContentText>Syncing to: {user.email}</DialogContentText>
 
