@@ -36,6 +36,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
@@ -44,6 +46,7 @@ function Chat() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [chatUpdated, setChatUpdated] = useState(false);
     const [chatSynced, setChatSynced] = useState(true);
+    const [openSettingsModal, setOpenSettingsModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const promptRef = useRef();
     const scrollRef = useRef(null);
@@ -54,6 +57,14 @@ function Chat() {
     });
 
     const [deletedialogopen, setDeleteDialogOpen] = useState(false);
+    const handleOpenSettingsModal = () => {
+        setOpenSettingsModal(true);
+    };
+
+    // Function to close the modal
+    const handleCloseSettingsModal = () => {
+        setOpenSettingsModal(false);
+    };
 
     const handleDeleteDialogOpen = () => {
         setDeleteDialogOpen(true);
@@ -157,7 +168,28 @@ function Chat() {
             throw error;
         }
     }
+    async function handleExport(supabaseUID) {
+        console.log("Start Download")
+        try {
+            const { data, error } = await supabaseClient
+                .from('chatdata')
+                .select('supabase_uid, history, messages, created_at')
+                .eq('supabase_uid', supabaseUID)
+                .csv();
 
+            if (error) {
+                throw error;
+            }
+            const blob = new Blob([data], { type: 'text/csv;charset=utf-8' });
+            let file = URL.createObjectURL(blob)
+            let a = document.createElement('a');
+            a.download = 'mello_exported_chats.csv';
+            a.href = file;
+            a.click();
+        } catch (error) {
+            console.error('Error downloading CSV:', error.message);
+        }
+    }
     const handleSend = async (event, message) => {
         event.preventDefault()
 
@@ -311,7 +343,6 @@ function Chat() {
                 const { data, error } = await supabaseClient
                     .from('chatdata')
                     .update({
-                        supabase_uid: supabaseUID,
                         history: chatData.history,
                         messages: chatData.messages
                     })
@@ -355,11 +386,13 @@ function Chat() {
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Mello
                     </Typography>
-
+                    <IconButton onClick={handleOpenSettingsModal} >
+                        <SettingsIcon />
+                    </IconButton>
                     <IconButton href="https://github.com/steve-cse/mello-react">
                         <GitHubIcon />
                     </IconButton>
-                    <Button variant="contained" onClick={signOut} >Logout</Button>
+
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -404,7 +437,7 @@ function Chat() {
                                     onClose={handleClose}
                                 >
 
-                                    <MenuItem>Download</MenuItem>
+
                                     <MenuItem onClick={async () => { console.log("Renamed Chat"); handleRenameDialogOpen(); handleClose(); }} >Rename</MenuItem>
                                     <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
@@ -451,7 +484,6 @@ function Chat() {
                                     onClose={handleClose}
                                 >
 
-                                    <MenuItem>Download</MenuItem>
                                     <MenuItem onClick={async () => { console.log("Renamed Chat"); handleRenameDialogOpen(); handleClose(); }} >Rename</MenuItem>
                                     <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
@@ -465,6 +497,7 @@ function Chat() {
 
             </Drawer>
             <Dialog
+                PaperProps={{ elevation: 1 }}
                 open={deletedialogopen}
                 onClose={handleDeleteDialogClose}
             >
@@ -487,6 +520,7 @@ function Chat() {
                 open={renamedialogopen}
                 onClose={handleRenameDialogClose}
                 PaperProps={{
+                    elevation: 1,
                     component: 'form',
                     onSubmit: (event) => {
                         event.preventDefault();
@@ -588,7 +622,7 @@ function Chat() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
-                                        <IconButton aria-label="speak" onClick={() => { console.log(user) }}>
+                                        <IconButton aria-label="speak" onClick={() => { console.log("Speaker ") }}>
                                             <MicIcon />
                                         </IconButton>
                                     </InputAdornment>
@@ -602,7 +636,35 @@ function Chat() {
                     </Box>
                 </form>
             </Box>
+            {/* Settings Modal */}
+            <Dialog PaperProps={{ elevation: 1 }} open={openSettingsModal} onClose={handleCloseSettingsModal}>
+                <DialogTitle>Account Settings</DialogTitle>
 
+                <DialogContent>
+                    <DialogContentText>Syncing to: {user.email}</DialogContentText>
+
+                </DialogContent>
+
+                <DialogActions sx={{ justifyContent: 'center' }}>
+
+                    <Button variant="contained" sx={{ mb: 2 }} onClick={() => { signOut(); }}>
+                        Logout
+                    </Button>
+
+                </DialogActions>
+                <DialogTitle>Chat Settings</DialogTitle>
+                <DialogContent>
+
+                    <DialogContentText>Export your chats to CSV ✨</DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{ justifyContent: 'center' }}>
+
+                    <Button variant="contained" sx={{ mb: 2 }} onClick={() => { handleExport(user.id); }}>
+                        Export
+                    </Button>
+
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }
