@@ -615,6 +615,7 @@ function Chat() {
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
+                            required
                             fullWidth
                             autoComplete="off"
                             placeholder="Type a message"
