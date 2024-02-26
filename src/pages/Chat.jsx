@@ -38,6 +38,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
@@ -639,7 +640,18 @@ function Chat() {
             {/* Settings Modal */}
             <Dialog PaperProps={{ elevation: 1 }} open={openSettingsModal} onClose={handleCloseSettingsModal}>
                 <DialogTitle>Account Settings</DialogTitle>
-
+                <IconButton
+          aria-label="close"
+          onClick={handleCloseSettingsModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+         
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
                 <DialogContent>
                     <DialogContentText>Syncing to: {user.email}</DialogContentText>
 
@@ -655,7 +667,7 @@ function Chat() {
                 <DialogTitle>Chat Settings</DialogTitle>
                 <DialogContent>
 
-                    <DialogContentText>Export your chats to CSV ✨</DialogContentText>
+                    <DialogContentText>Export your chats to CSV </DialogContentText>
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: 'center' }}>
 
