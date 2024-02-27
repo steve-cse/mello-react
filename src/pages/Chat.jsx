@@ -310,6 +310,7 @@ function Chat() {
                 console.error('API Error:', error);
                 setAlertError('API Error: ' + error.message)
                 setChatSynced(true)
+                setIsTyping(false)
 
             }
         } else {
