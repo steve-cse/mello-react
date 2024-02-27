@@ -54,6 +54,7 @@ function Chat() {
     const [chatUpdated, setChatUpdated] = useState(false);
     const [chatSynced, setChatSynced] = useState(true);
     const [openSettingsModal, setOpenSettingsModal] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [loading, setLoading] = useState(true);
     const [alertError, setAlertError] = useState("");
@@ -240,7 +241,7 @@ function Chat() {
         };
 
         promptRef.current.value = ''
-
+setIsTyping(true)
         // Update messages array with the new message
         const newMessages = structuredClone(chatData.messages); //create a deep copy
 
@@ -289,10 +290,10 @@ function Chat() {
                 }
 
                 const data = await response.json();
-              
+
 
                 const updatedMessages = [...chatMessages];
-                
+
                 updatedMessages[selectedIndex || 0].push({
                     message: data.choices[0].message.content,
                     sender: "MelloGPT"
@@ -302,6 +303,7 @@ function Chat() {
                     ...prevData,
                     messages: updatedMessages
                 }));
+                setIsTyping(false)
                 setChatSynced(false)
             } catch (error) {
                 console.error('API Error:', error);
@@ -442,7 +444,7 @@ function Chat() {
             >
 
                 <Toolbar />
-                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
+                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} disabled={loading} onClick={handleNewChat}>
                     New Chat
                 </Button>
                 <List>
@@ -492,7 +494,7 @@ function Chat() {
                 PaperProps={{ elevation: 1 }}
             >
                 <Toolbar />
-                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
+                <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} disabled={loading} onClick={handleNewChat}>
                     New Chat
                 </Button>
 
@@ -662,6 +664,9 @@ function Chat() {
 
 
                 {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
+                <div style={{marginLeft:22, marginBottom:-7}} >
+                    {isTyping && `Mello is typing....`}
+                </div>
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
@@ -681,7 +686,7 @@ function Chat() {
                                                     <StopIcon />
                                                 </IconButton>
                                             ) : (
-                                                <IconButton aria-label="start listening" onClick={startListening}>
+                                                <IconButton disabled={loading} aria-label="start listening" onClick={startListening}>
                                                     <MicIcon />
                                                 </IconButton>
                                             )
