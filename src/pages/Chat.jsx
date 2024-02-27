@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ChatMessages from "../components/ChatMessages";
+import Alert from '@mui/material/Alert';
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import AddIcon from "@mui/icons-material/Add";
@@ -26,6 +27,7 @@ import StyledBadge from "../components/StyledBadge";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ScaleLoader from "react-spinners/ScaleLoader";
 import { deepOrange, deepPurple } from '@mui/material/colors';
 import FormControl from '@mui/material/FormControl';
 import OpenAI from 'openai';
@@ -51,6 +53,7 @@ function Chat() {
     const [chatSynced, setChatSynced] = useState(true);
     const [openSettingsModal, setOpenSettingsModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [loading, setLoading] = useState(true);
     const promptRef = useRef();
     const scrollRef = useRef(null);
 
@@ -141,6 +144,7 @@ function Chat() {
                     setChatSynced(true) //avoid double sync
                     setChatData(fetchedData);
                     console.log("Chat fetched from supabase")
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching chat data:', error);
@@ -582,53 +586,71 @@ function Chat() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
-                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
-                    <Toolbar />
-                    {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
-                        <Box
-                            key={index}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
-                        >
-                            {message.sender !== "user" && (
-                                <StyledBadge
-                                    overlap="circular"
-                                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                                    variant="dot"
-                                >
-                                    <Avatar
-                                        sx={{ ml: 1 }}
-                                        alt="mello_avatar"
-                                        src="/mello_avatar.webp"
-                                    />
-                                </StyledBadge>
-                            )}
 
-                            <Typography
-                                paragraph={true}
-                                sx={{
-                                    backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
-                                    color: message.sender === "user" ? "#FFFFFF" : "#000000",
-                                    borderRadius: "19px",
-                                    padding: "10px",
-                                    maxWidth: "100%",
-                                    margin: "10px",
-                                }}
+            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
+                
+                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
+                  
+                    {loading ? (
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                            <div>
+                                <ScaleLoader size={"150"} color={"#6200EE"} loading={loading} />
+                            </div>
+                        </div>
+
+
+                    ) : (<>
+                        <Toolbar />
+                        {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
+                            <Box
+                                key={index}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
                             >
-                                {message.message}
-                            </Typography>
-                            {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >{user.email.charAt(0).toUpperCase()}</Avatar>}
-                        </Box>
-                    ))}
-                    <div ref={scrollRef}></div>
+                                {message.sender !== "user" && (
+                                    <StyledBadge
+                                        overlap="circular"
+                                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                        variant="dot"
+                                    >
+                                        <Avatar
+                                            sx={{ ml: 1 }}
+                                            alt="mello_avatar"
+                                            src="/mello_avatar.webp"
+                                        />
+                                    </StyledBadge>
+                                )}
+
+                                <Typography
+                                    paragraph={true}
+                                    sx={{
+                                        backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
+                                        color: message.sender === "user" ? "#FFFFFF" : "#000000",
+                                        borderRadius: "19px",
+                                        padding: "10px",
+                                        maxWidth: "100%",
+                                        margin: "10px",
+                                    }}
+                                >
+                                    {message.message}
+                                </Typography>
+                                {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >{user.email.charAt(0).toUpperCase()}</Avatar>}
+
+                            </Box>
+                        ))}
+                        <div ref={scrollRef}></div>
+                    </>
+                    )}
                 </Box>
+
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
                             required
                             fullWidth
+                            disabled={loading}
                             autoComplete="off"
                             placeholder="Type a message"
                             inputRef={promptRef}
@@ -652,12 +674,13 @@ function Chat() {
                                 sx: { borderRadius: 4 },
                             }}
                         />
-                        <IconButton type="submit">
+                        <IconButton type="submit" disabled={loading}>
                             <SendIcon />
                         </IconButton>
                     </Box>
                 </form>
             </Box>
+
             {/* Settings Modal */}
             <Dialog PaperProps={{ elevation: 1 }} open={openSettingsModal} onClose={handleCloseSettingsModal}>
                 <DialogTitle>Account Settings</DialogTitle>
