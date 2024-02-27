@@ -682,6 +682,7 @@ function Chat() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
+                                    
                                         {recognitionSupport ? (
                                             isListening ? (
                                                 <IconButton aria-label="stop listening" onClick={stopListening}>
@@ -693,14 +694,15 @@ function Chat() {
                                                 </IconButton>
                                             )
                                         ) : null}
+                                         <IconButton type="submit" disabled={loading} sx={{mr:-2}}>
+                            <SendIcon />
+                        </IconButton>
                                     </InputAdornment>
                                 ),
                                 sx: { borderRadius: 4 },
                             }}
                         />
-                        <IconButton type="submit" disabled={loading}>
-                            <SendIcon />
-                        </IconButton>
+                       
                     </Box>
                 </form>
             </Box>
