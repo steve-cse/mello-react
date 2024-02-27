@@ -54,6 +54,7 @@ function Chat() {
     const [openSettingsModal, setOpenSettingsModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [alertError, setAlertError] = useState("");
     const promptRef = useRef();
     const scrollRef = useRef(null);
 
@@ -148,6 +149,7 @@ function Chat() {
                 }
             } catch (error) {
                 console.error('Error fetching chat data:', error);
+                setAlertError('Error fetching chat data from Supabase.')
             }
         }
 
@@ -182,6 +184,7 @@ function Chat() {
             }
         } catch (error) {
             console.error('Error fetching chat data from Supabase:', error.message);
+            setAlertError('Error fetching chat data from Supabase.')
             throw error;
         }
     }
@@ -205,6 +208,7 @@ function Chat() {
             a.click();
         } catch (error) {
             console.error('Error downloading CSV:', error.message);
+            setAlertError('Error downloading CSV.')
         }
     }
     const handleSend = async (event, message) => {
@@ -300,6 +304,7 @@ function Chat() {
             setChatSynced(false)
         } catch (error) {
             console.error('API Error:', error);
+            setAlertError('API Error: '+ error.message)
             setChatSynced(true)
 
         }
@@ -349,6 +354,7 @@ function Chat() {
             setChatSynced(false)
         } catch (error) {
             console.error('Error deleting chat:', error);
+            setAlertError('Error deleting chat')
         }
     };
 
@@ -374,7 +380,7 @@ function Chat() {
                 return data;
             } catch (error) {
                 console.error('Error inserting chat data:', error.message);
-                console.log(error)
+                setAlertError('Error inserting chat data')
                 throw error;
             }
         }
@@ -411,6 +417,7 @@ function Chat() {
                     </IconButton>
 
                 </Toolbar>
+
             </AppBar>
             <Drawer
                 variant="temporary"
@@ -428,6 +435,7 @@ function Chat() {
                 }}
                 PaperProps={{ elevation: 1 }}
             >
+
                 <Toolbar />
                 <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
                     New Chat
@@ -556,6 +564,7 @@ function Chat() {
                             setChatSynced(false)
                         } catch (error) {
                             console.error('Error renaming chat:', error);
+                            setAlertError('Error renaming chat')
                         }
                         handleRenameDialogClose();
                     },
@@ -588,9 +597,9 @@ function Chat() {
             </Dialog>
 
             <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
-                
+
                 <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
-                  
+
                     {loading ? (
 
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -602,6 +611,7 @@ function Chat() {
 
                     ) : (<>
                         <Toolbar />
+
                         {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
                             <Box
                                 key={index}
@@ -645,6 +655,8 @@ function Chat() {
                     )}
                 </Box>
 
+
+                {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
