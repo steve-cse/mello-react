@@ -42,10 +42,12 @@ import StopIcon from '@mui/icons-material/Stop';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
+import Runpod from "../runpod/Runpod";
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
     const { text, startListening, stopListening, isListening, recognitionSupport } = useSpeechRecognition();
+    const podAPI = Runpod();
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -149,7 +151,7 @@ function Chat() {
                 }
             } catch (error) {
                 console.error('Error fetching chat data:', error);
-                setAlertError('Error fetching chat data from Supabase.')
+                setAlertError('Error fetching chat data from Supabase')
             }
         }
 
@@ -184,7 +186,7 @@ function Chat() {
             }
         } catch (error) {
             console.error('Error fetching chat data from Supabase:', error.message);
-            setAlertError('Error fetching chat data from Supabase.')
+            setAlertError('Error fetching chat data from Supabase')
             throw error;
         }
     }
@@ -208,7 +210,7 @@ function Chat() {
             a.click();
         } catch (error) {
             console.error('Error downloading CSV:', error.message);
-            setAlertError('Error downloading CSV.')
+            setAlertError('Error downloading CSV')
         }
     }
     const handleSend = async (event, message) => {
@@ -262,51 +264,54 @@ function Chat() {
     };
 
     async function processMessageToMelloGPT(chatMessages) {
-        try {
-            let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
-                let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
-                return { role: role, content: messageObject.message }
-            });
-            console.log("API messages: ")
-            console.log(apiMessages)
-            const apiRequestBody = {
-                "model": "TheBloke/MelloGPT-AWQ",
-                "temperature": 0.4,
-                "messages": [...apiMessages]
+        if (podAPI !== "No Running Pods") {
+            try {
+                let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
+                    let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
+                    return { role: role, content: messageObject.message }
+                });
+                const apiRequestBody = {
+                    "model": "TheBloke/MelloGPT-AWQ",
+                    "temperature": 0.4,
+                    "messages": [...apiMessages]
+                }
+
+                const response = await fetch(podAPI, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(apiRequestBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+              
+
+                const updatedMessages = [...chatMessages];
+                
+                updatedMessages[selectedIndex || 0].push({
+                    message: data.choices[0].message.content,
+                    sender: "MelloGPT"
+                });
+
+                setChatData(prevData => ({
+                    ...prevData,
+                    messages: updatedMessages
+                }));
+                setChatSynced(false)
+            } catch (error) {
+                console.error('API Error:', error);
+                setAlertError('API Error: ' + error.message)
+                setChatSynced(true)
+
             }
-
-            const response = await fetch("https://8azjnino1my1ww-8000.proxy.runpod.net/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(apiRequestBody)
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            console.log(data)
-
-            const updatedMessages = [...chatMessages];
-            console.log(updatedMessages)
-            updatedMessages[selectedIndex || 0].push({
-                message: data.choices[0].message.content,
-                sender: "MelloGPT"
-            });
-
-            setChatData(prevData => ({
-                ...prevData,
-                messages: updatedMessages
-            }));
-            setChatSynced(false)
-        } catch (error) {
-            console.error('API Error:', error);
-            setAlertError('API Error: '+ error.message)
+        } else {
+            setAlertError("API Error: Server not Running")
             setChatSynced(true)
-
         }
     }
 
