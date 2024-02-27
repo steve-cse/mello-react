@@ -241,7 +241,7 @@ function Chat() {
         };
 
         promptRef.current.value = ''
-setIsTyping(true)
+
         // Update messages array with the new message
         const newMessages = structuredClone(chatData.messages); //create a deep copy
 
@@ -266,6 +266,7 @@ setIsTyping(true)
 
     async function processMessageToMelloGPT(chatMessages) {
         if (podAPI !== "No Running Pods") {
+            setIsTyping(true)
             try {
                 let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
                     let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
@@ -664,7 +665,7 @@ setIsTyping(true)
 
 
                 {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
-                <div style={{marginLeft:22, marginBottom:-7}} >
+                <div style={{ marginLeft: 22, marginBottom: -7 }} >
                     {isTyping && `Mello is typing....`}
                 </div>
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
