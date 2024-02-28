@@ -109,11 +109,11 @@ function Chat() {
 
 
     }, [text]);
-    useEffect(() => {
+    // useEffect(() => {
 
-        console.log("Listening: " + isListening)
+    //     console.log("Listening: " + isListening)
 
-    }, [isListening]);
+    // }, [isListening]);
 
     // useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
     // useEffect(() => { console.log("Chat Synced changed to: " + chatSynced) }, [chatSynced])
