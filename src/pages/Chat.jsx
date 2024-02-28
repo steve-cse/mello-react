@@ -274,7 +274,7 @@ function Chat() {
                     return { role: role, content: messageObject.message }
                 });
                 const apiRequestBody = {
-                    "model": "TheBloke/MelloGPT-AWQ",
+                    "model": "steve-cse/MelloGPT",
                     "temperature": 0.4,
                     "messages": [...apiMessages]
                 }
@@ -360,7 +360,7 @@ function Chat() {
                 history: updatedHistory,
                 messages: updatedMessages,
             }));
-
+            setSelectedIndex(0)
             setChatSynced(false)
         } catch (error) {
             console.error('Error deleting chat:', error);
@@ -663,11 +663,10 @@ function Chat() {
                                 </Box>
                             ))) : (
                             // If messages array is empty, display an <h1> tag with the text "Help"
-                            <div style={{ display: "flex", flexDirection:"column",justifyContent: "center", alignItems: 'center' ,height: '75vh', width: '100%' }}>
+                            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center', height: '75vh', width: '100%' }}>
 
-                                <h2 style={{textAlign: 'center'}}>How can I empower you today?<br/>😊 </h2>
-                             
-                                
+                                <h2 style={{ textAlign: 'center' }}>How can I empower you today?<br />😊 </h2>
+
                             </div>
                         )}
                         <div ref={scrollRef}></div>

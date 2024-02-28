@@ -46,23 +46,66 @@ import Runpod from "../runpod/Runpod";
 import "./Incognito.css";
 function Incognito() {
     const drawerWidth = 240;
+
+    const { text, startListening, stopListening, isListening, recognitionSupport } = useSpeechRecognition();
+    const podAPI = Runpod();
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
     const [mobileOpen, setMobileOpen] = useState(false);
     const [chatUpdated, setChatUpdated] = useState(false);
+
+
+    const [isTyping, setIsTyping] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+
+    const [alertError, setAlertError] = useState("");
     const promptRef = useRef();
     const scrollRef = useRef(null);
+
     const [chatData, setChatData] = useState({
         history: [],
         messages: []
     });
+
+    const [deletedialogopen, setDeleteDialogOpen] = useState(false);
+
+
+
+
+    const handleDeleteDialogOpen = () => {
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
+    const [renamedialogopen, setRenameDialogOpen] = useState(false);
+
+    const handleRenameDialogOpen = () => {
+        setRenameDialogOpen(true);
+    };
+
+    const handleRenameDialogClose = () => {
+        setRenameDialogOpen(false);
+    };
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
         }
     }, [chatData.messages]);
 
+
+    useEffect(() => {
+        promptRef.current.value = text
+    }, [text]);
+    // useEffect(() => {
+
+    //     console.log("Listening: " + isListening)
+
+    // }, [isListening]);
+
+    // useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
+    // useEffect(() => { console.log("Chat Synced changed to: " + chatSynced) }, [chatSynced])
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
@@ -74,17 +117,21 @@ function Incognito() {
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
+
         setAnchorEl(event.currentTarget);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
-        setSelectedIndex(null)
+
+
     };
+
 
     const handleSend = async (event, message) => {
         event.preventDefault()
-        if (selectedIndex === null && chatData.history.length === 0) {
+
+        if (chatData.history.length === 0) {
             setSelectedIndex(0)
             setChatData(prevData => ({
                 ...prevData,
@@ -110,7 +157,7 @@ function Incognito() {
         promptRef.current.value = ''
 
         // Update messages array with the new message
-        const newMessages = [...chatData.messages];
+        const newMessages = structuredClone(chatData.messages); //create a deep copy
 
         // Check if the array at index 0 exists, if not, create it
         if (!newMessages[selectedIndex || 0]) {
@@ -126,51 +173,66 @@ function Incognito() {
             messages: newMessages,
         }));
 
-        // const newMessages = [...chatData.messages, newMessage];
-        // setChatData(prevData => ({
-        //     ...prevData,
-        //     messages: newMessages
-        // }));
+
         console.log(chatData)
         await processMessageToMelloGPT(newMessages);
     };
 
     async function processMessageToMelloGPT(chatMessages) {
-        let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
-            let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
-            return { role: role, content: messageObject.message }
-        });
-        console.log("API messages: ")
-        console.log(apiMessages)
-        const apiRequestBody = {
-            "model": "TheBloke/MelloGPT-AWQ",
-            "temperature": 0.3,
-            "messages": [...apiMessages]
+        if (podAPI !== "No Running Pods") {
+            setIsTyping(true)
+            try {
+                let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
+                    let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
+                    return { role: role, content: messageObject.message }
+                });
+                const apiRequestBody = {
+                    "model": "steve-cse/MelloGPT",
+                    "temperature": 0.4,
+                    "messages": [...apiMessages]
+                }
+
+                const response = await fetch(podAPI, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(apiRequestBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+
+
+                const updatedMessages = [...chatMessages];
+
+                updatedMessages[selectedIndex || 0].push({
+                    message: data.choices[0].message.content,
+                    sender: "MelloGPT"
+                });
+
+                setChatData(prevData => ({
+                    ...prevData,
+                    messages: updatedMessages
+                }));
+                setIsTyping(false)
+
+            } catch (error) {
+                console.error('API Error:', error);
+                setAlertError('API Error: ' + error.message)
+
+                setIsTyping(false)
+
+            }
+        } else {
+            setAlertError("API Error: Server not Running")
+
         }
-
-        await fetch("https://5i0p4d239zd0mg-8000.proxy.runpod.net/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(apiRequestBody)
-        }).then((data) => {
-            return data.json();
-        }).then((data) => {
-            console.log(data)
-            const updatedMessages = [...chatMessages];
-            console.log(updatedMessages)
-            updatedMessages[selectedIndex || 0].push({
-                message: data.choices[0].message.content,
-                sender: "MelloGPT"
-            });
-
-            setChatData(prevData => ({
-                ...prevData,
-                messages: updatedMessages
-            }));
-        });
     }
+
 
     const handleNewChat = () => {
         if (chatData.messages[selectedIndex] && chatData.messages[selectedIndex].length === 0) {
@@ -187,6 +249,7 @@ function Incognito() {
                 history: ["New Chat", ...chatData.history],
                 messages: newMessages,
             };
+
             setChatData(newChatData);
             // setChatData(prevData => ({
             //     history: ["New Chat", ...prevData.history],
@@ -196,6 +259,28 @@ function Incognito() {
             setChatUpdated(false)
         }
     }
+    const handleDeleteChat = async (index) => {
+        try {
+            const updatedHistory = [...chatData.history];
+            updatedHistory.splice(index, 1); // Remove the chat from history
+
+            const updatedMessages = [...chatData.messages];
+            updatedMessages.splice(index, 1); // Remove the messages for the chat
+
+            // Update chatData with the updated history and messages
+            setChatData((prevData) => ({
+                ...prevData,
+                history: updatedHistory,
+                messages: updatedMessages,
+            }));
+            setSelectedIndex(0)
+
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+            setAlertError('Error deleting chat')
+        }
+    };
+
 
 
     return (
@@ -227,6 +312,7 @@ function Incognito() {
                     </IconButton>
 
                 </Toolbar>
+
             </AppBar>
             <Drawer
                 variant="temporary"
@@ -244,6 +330,7 @@ function Incognito() {
                 }}
                 PaperProps={{ elevation: 1 }}
             >
+
                 <Toolbar />
                 <Button variant="contained" sx={{ m: 2 }} startIcon={<AddIcon />} onClick={handleNewChat}>
                     New Chat
@@ -270,15 +357,16 @@ function Incognito() {
                                     onClose={handleClose}
                                 >
 
-                                    <MenuItem>Download</MenuItem>
-                                    <MenuItem>Rename</MenuItem>
-                                    <MenuItem >Delete</MenuItem>
+
+                                    <MenuItem onClick={async () => { console.log("Renamed Chat"); handleRenameDialogOpen(); handleClose(); }} >Rename</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
                                 </Menu>
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
+
             </Drawer>
             <Drawer
                 variant="permanent"
@@ -316,62 +404,163 @@ function Incognito() {
                                     onClose={handleClose}
                                 >
 
-                                    <MenuItem>Download</MenuItem>
-                                    <MenuItem>Rename</MenuItem>
-                                    <MenuItem >Delete</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Renamed Chat"); handleRenameDialogOpen(); handleClose(); }} >Rename</MenuItem>
+                                    <MenuItem onClick={async () => { console.log("Deleted"); handleDeleteDialogOpen(); handleClose(); }} >Delete</MenuItem>
 
                                 </Menu>
                             </ListItemButton>
                         </ListItem>
-                    ))}
-                </List>
-            </Drawer>
-            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
-                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
-                    <Toolbar />
-                    {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
-                        <Box
-                            key={index}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
-                        >
-                            {message.sender !== "user" && (
-                                <StyledBadge
-                                    overlap="circular"
-                                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                                    variant="dot"
-                                >
-                                    <Avatar
-                                        sx={{ ml: 1 }}
-                                        alt="mello_avatar"
-                                        src="/mello_avatar.webp"
-                                    />
-                                </StyledBadge>
-                            )}
 
-                            <Typography
-                                paragraph={true}
-                                sx={{
-                                    backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
-                                    color: message.sender === "user" ? "#FFFFFF" : "#000000",
-                                    borderRadius: "19px",
-                                    padding: "10px",
-                                    maxWidth: "100%",
-                                    margin: "10px",
-                                }}
-                            >
-                                {message.message}
-                            </Typography>
-                            {message.sender === "user" && <Avatar sx={{ mr: 1 }}>U</Avatar>}
-                        </Box>
                     ))}
+
+                </List>
+
+            </Drawer>
+            <Dialog
+                PaperProps={{ elevation: 1 }}
+                open={deletedialogopen}
+                onClose={handleDeleteDialogClose}
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Delete chat?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        This will delete the chat: {chatData.history[selectedIndex]}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{ mb: 2, mr: 1 }}>
+                    <Button variant="contained" onClick={handleDeleteDialogClose}>Cancel</Button>
+                    <Button variant="contained" color="error" onClick={async () => { await handleDeleteChat(selectedIndex); handleDeleteDialogClose(); }}>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={renamedialogopen}
+                onClose={handleRenameDialogClose}
+                PaperProps={{
+                    elevation: 1,
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+
+                        try {
+                            const updatedHistory = [...chatData.history];
+                            updatedHistory[selectedIndex] = formJson.new_name;
+
+                            setChatData((prevData) => ({
+                                ...prevData,
+                                history: updatedHistory,
+                            }));
+
+
+                        } catch (error) {
+                            console.error('Error renaming chat:', error);
+                            setAlertError('Error renaming chat')
+                        }
+                        handleRenameDialogClose();
+                    },
+                }}
+            >
+                <DialogTitle>Rename this chat</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        You're about to rename this chat. Choose a new name that reflects
+                        the conversation's focus or purpose.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        label="Enter New Name"
+                        fullWidth
+                        variant="standard"
+                        name="new_name"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" onClick={handleRenameDialogClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="contained" type="submit">
+                        Rename
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", }}>
+
+                <Box component={Paper} elevation={0} sx={{ flexGrow: 1, p: 1, overflowY: "auto" }}>
+
+                    <Toolbar />
+
+                    {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].length > 0 ? (
+
+                        chatData.messages[selectedIndex].map((message, index) => (
+                            <Box
+                                key={index}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
+                            >
+                                {message.sender !== "user" && (
+                                    <StyledBadge
+                                        overlap="circular"
+                                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                        variant="dot"
+                                    >
+                                        <Avatar
+                                            sx={{ ml: 1 }}
+                                            alt="mello_avatar"
+                                            src="/mello_avatar.webp"
+                                        />
+                                    </StyledBadge>
+                                )}
+
+                                <Typography
+                                    paragraph={true}
+                                    sx={{
+                                        backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
+                                        color: message.sender === "user" ? "#FFFFFF" : "#000000",
+                                        borderRadius: "19px",
+                                        padding: "10px",
+                                        maxWidth: "100%",
+                                        margin: "10px",
+                                    }}
+                                >
+                                    {message.message}
+                                </Typography>
+                                {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >U</Avatar>}
+
+                            </Box>
+                        ))) : (
+                        // If messages array is empty, display an <h1> tag with the text "Help"
+                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center', height: '75vh', width: '100%' }}>
+
+                            <h2 style={{ textAlign: 'center' }}>How can I empower you today?<br />😊 </h2>
+
+                        </div>
+                    )}
                     <div ref={scrollRef}></div>
+
+
                 </Box>
+
+
+                {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
+
+
+                {isTyping && <div style={{ marginLeft: 23, marginBottom: -11 }}>Mello is typing<span className="blink">....</span> </div>}
+
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
+                            required
                             fullWidth
+
                             autoComplete="off"
                             placeholder="Type a message"
                             inputRef={promptRef}
@@ -379,20 +568,32 @@ function Incognito() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
-                                        <IconButton aria-label="speak" onClick={() => { console.log(chatData.messages[selectedIndex]) }}>
-                                            <MicIcon />
+
+                                        {recognitionSupport ? (
+                                            isListening ? (
+                                                <IconButton aria-label="stop listening" onClick={stopListening}>
+                                                    <StopIcon />
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton aria-label="start listening" onClick={startListening}>
+                                                    <MicIcon />
+                                                </IconButton>
+                                            )
+                                        ) : null}
+                                        <IconButton type="submit" sx={{ mr: -2 }}>
+                                            <SendIcon />
                                         </IconButton>
                                     </InputAdornment>
                                 ),
                                 sx: { borderRadius: 4 },
                             }}
                         />
-                        <IconButton type="submit">
-                            <SendIcon />
-                        </IconButton>
+
                     </Box>
                 </form>
             </Box>
+
+
 
         </Box>
     )
