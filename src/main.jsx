@@ -12,7 +12,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ProtectedRoute from "./components/ProtectedRoute"
 import UpdatePassword from "./pages/UpdatePassword.jsx";
-import Guest from "./pages/Guest.jsx";
+import Incognito from "./pages/Incognito.jsx";
 
 let theme = createTheme({
   palette: {
@@ -52,8 +52,8 @@ const router = createBrowserRouter([
     element:<UpdatePassword/>
   },
   {
-    path: "/guest",
-    element: <Guest/>
+    path: "/incognito",
+    element: <Incognito/>
   }
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

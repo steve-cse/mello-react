@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ChatMessages from "../components/ChatMessages";
+import Alert from '@mui/material/Alert';
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import AddIcon from "@mui/icons-material/Add";
@@ -26,9 +27,24 @@ import StyledBadge from "../components/StyledBadge";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ScaleLoader from "react-spinners/ScaleLoader";
+import { deepOrange, deepPurple } from '@mui/material/colors';
 import FormControl from '@mui/material/FormControl';
 import OpenAI from 'openai';
-function Guest() {
+import { supabaseClient } from '../config/supabase';
+import { useAuth } from "../contexts/AuthContext";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import StopIcon from '@mui/icons-material/Stop';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
+import useSpeechRecognition from "../hooks/useSpeechRecognition";
+import Runpod from "../runpod/Runpod";
+import "./Incognito.css";
+function Incognito() {
     const drawerWidth = 240;
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
@@ -382,4 +398,4 @@ function Guest() {
     )
 }
 
-export default Guest
+export default Incognito

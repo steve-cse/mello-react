@@ -622,44 +622,54 @@ function Chat() {
                     ) : (<>
                         <Toolbar />
 
-                        {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].map((message, index) => (
-                            <Box
-                                key={index}
-                                display="flex"
-                                alignItems="center"
-                                justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
-                            >
-                                {message.sender !== "user" && (
-                                    <StyledBadge
-                                        overlap="circular"
-                                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                                        variant="dot"
-                                    >
-                                        <Avatar
-                                            sx={{ ml: 1 }}
-                                            alt="mello_avatar"
-                                            src="/mello_avatar.webp"
-                                        />
-                                    </StyledBadge>
-                                )}
+                        {chatData.messages[selectedIndex] && chatData.messages[selectedIndex].length > 0 ? (
 
-                                <Typography
-                                    paragraph={true}
-                                    sx={{
-                                        backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
-                                        color: message.sender === "user" ? "#FFFFFF" : "#000000",
-                                        borderRadius: "19px",
-                                        padding: "10px",
-                                        maxWidth: "100%",
-                                        margin: "10px",
-                                    }}
+                            chatData.messages[selectedIndex].map((message, index) => (
+                                <Box
+                                    key={index}
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent={message.sender === "user" ? "flex-end" : "flex-start"}
                                 >
-                                    {message.message}
-                                </Typography>
-                                {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >{user.email.charAt(0).toUpperCase()}</Avatar>}
+                                    {message.sender !== "user" && (
+                                        <StyledBadge
+                                            overlap="circular"
+                                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                            variant="dot"
+                                        >
+                                            <Avatar
+                                                sx={{ ml: 1 }}
+                                                alt="mello_avatar"
+                                                src="/mello_avatar.webp"
+                                            />
+                                        </StyledBadge>
+                                    )}
 
-                            </Box>
-                        ))}
+                                    <Typography
+                                        paragraph={true}
+                                        sx={{
+                                            backgroundColor: message.sender === "user" ? "#6200EE" : "#d1d5db",
+                                            color: message.sender === "user" ? "#FFFFFF" : "#000000",
+                                            borderRadius: "19px",
+                                            padding: "10px",
+                                            maxWidth: "100%",
+                                            margin: "10px",
+                                        }}
+                                    >
+                                        {message.message}
+                                    </Typography>
+                                    {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >{user.email.charAt(0).toUpperCase()}</Avatar>}
+
+                                </Box>
+                            ))) : (
+                            // If messages array is empty, display an <h1> tag with the text "Help"
+                            <div style={{ display: "flex", flexDirection:"column",justifyContent: "center", alignItems: 'center' ,height: '75vh', width: '100%' }}>
+
+                                <h2 style={{textAlign: 'center'}}>How can I empower you today?<br/>😊 </h2>
+                             
+                                
+                            </div>
+                        )}
                         <div ref={scrollRef}></div>
                     </>
                     )}
@@ -668,9 +678,9 @@ function Chat() {
 
                 {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
 
-              
-                    {isTyping && <div style={{ marginLeft: 23, marginBottom: -11}}>Mello is typing<span className="blink">....</span> </div> }
-             
+
+                {isTyping && <div style={{ marginLeft: 23, marginBottom: -11 }}>Mello is typing<span className="blink">....</span> </div>}
+
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
