@@ -533,7 +533,8 @@ function Incognito() {
                                 >
                                     {message.message}
                                 </Typography>
-                                {message.sender === "user" && <Avatar sx={{ bgcolor: '#ff4569', mr: 1 }} >U</Avatar>}
+                                {message.sender === "user" && <Avatar sx={{ mr: 1 }} alt="incognito_avatar"
+                                    src="/incognito.png">U</Avatar>}
 
                             </Box>
                         ))) : (
