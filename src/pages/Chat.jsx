@@ -43,6 +43,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
 import Runpod from "../runpod/Runpod";
+import "./Chat.css";
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
@@ -114,8 +115,8 @@ function Chat() {
 
     }, [isListening]);
 
-    useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
-    useEffect(() => { console.log("Chat Synced changed to: " + chatSynced) }, [chatSynced])
+    // useEffect(() => { console.log("Selected Index changed to: " + selectedIndex) }, [selectedIndex])
+    // useEffect(() => { console.log("Chat Synced changed to: " + chatSynced) }, [chatSynced])
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
@@ -666,9 +667,10 @@ function Chat() {
 
 
                 {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
-                <div style={{ marginLeft: 22, marginBottom: -7 }} >
-                    {isTyping && `Mello is typing....`}
-                </div>
+
+              
+                    {isTyping && <div style={{ marginLeft: 23, marginBottom: -11}}>Mello is typing<span className="blink">....</span> </div> }
+             
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
                         <TextField
@@ -682,7 +684,7 @@ function Chat() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
-                                    
+
                                         {recognitionSupport ? (
                                             isListening ? (
                                                 <IconButton aria-label="stop listening" onClick={stopListening}>
@@ -694,15 +696,15 @@ function Chat() {
                                                 </IconButton>
                                             )
                                         ) : null}
-                                         <IconButton type="submit" disabled={loading} sx={{mr:-2}}>
-                            <SendIcon />
-                        </IconButton>
+                                        <IconButton type="submit" disabled={loading} sx={{ mr: -2 }}>
+                                            <SendIcon />
+                                        </IconButton>
                                     </InputAdornment>
                                 ),
                                 sx: { borderRadius: 4 },
                             }}
                         />
-                       
+
                     </Box>
                 </form>
             </Box>
