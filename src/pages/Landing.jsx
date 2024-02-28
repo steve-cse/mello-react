@@ -58,20 +58,13 @@ export default function Landing() {
                         variant="contained"
                         color="primary"
                         sx={{ mb: 2, width: "200px" }}
-                        onClick={() => navigate("/login")}
+                        onClick={() => navigate("/chat")}
                     >
-                        Log in
+                      Start Chatting
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ mb: 2, width: "200px" }}
-                        onClick={() => navigate("/signup")}
-                    >
-                        Sign up
-                    </Button>
-                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}  onClick={() => navigate("/guest")}>
-                        Try as Guest
+                   
+                    <Button variant="outlined" color="secondary" sx={{ width: "200px" }}  onClick={() => navigate("/incognito")}>
+                    Incognito Mode
                     </Button>
                 </Box>
             </Grid>
