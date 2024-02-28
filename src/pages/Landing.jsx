@@ -35,6 +35,7 @@ export default function Landing() {
                     sx={{
                         my: 8,
                         mx: 4,
+                        mt: 15,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
@@ -75,15 +76,15 @@ export default function Landing() {
                         textAlign: 'center',
                     }} textAlign="center">
                         <Typography >
-                        👨‍💻 with ❤️ by <a
-              style={{ textDecoration: "none", color: "inherit" }}
-              href="https://github.com/steve-cse"
-              target="_blank" rel="noopener noreferrer" 
-            >
-              Steve Boby George
-            </a>
+                            👨‍💻 with ❤️ by <a
+                                style={{ textDecoration: "none", color: "inherit" }}
+                                href="https://github.com/steve-cse"
+                                target="_blank" rel="noopener noreferrer"
+                            >
+                                Steve Boby George
+                            </a>
                         </Typography >
-                       
+
                     </Box>
                 </Box>
             </Grid>
