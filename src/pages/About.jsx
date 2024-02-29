@@ -74,13 +74,7 @@ export default function About() {
                         Feel free to contribute by submitting bug fixes, feature enhancements, documentation improvements, or any other valuable additions that can help enhance the functionality and usability of Mello. Your contributions are highly appreciated!
                     </Typography>
                     <br />
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
-                        Axolotl
-                    </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }}>
-                        The axolotl config file can be found <a href="https://github.com/steve-cse/mello/blob/master/mello.yml" style={{ color: "inherit" }} target="_blank" rel="noopener noreferrer" >here</a>
-
-                    </Typography>
+                   
                     <div style={{ marginTop: 10 }}>
                         <a href="https://github.com/OpenAccess-AI-Collective/axolotl" target="_blank" rel="noopener noreferrer" >
 
@@ -96,7 +90,7 @@ export default function About() {
 
                         <Typography >
                             Coded with ❤️ by <a
-                                style={{ textDecoration: "none", color: "inherit" }}
+                                style={{  color: "inherit" }}
                                 href="https://github.com/steve-cse"
                                 target="_blank" rel="noopener noreferrer"
                             >
