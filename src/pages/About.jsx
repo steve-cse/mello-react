@@ -15,7 +15,7 @@ export default function About() {
                 square
             >
                 <Box >
-                    <Typography variant="h4" gutterBottom sx={{ fontSize: '2.5rem' , fontWeight: 'bold' }}>
+                    <Typography variant="h4" gutterBottom sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
                         Help & Tutorials
                     </Typography>
                     <Typography paragraph sx={{ fontSize: '1.2rem' }}>
@@ -50,11 +50,11 @@ export default function About() {
 
                     </Typography>
                     <br />
-                    <Typography variant="h4" gutterBottom sx={{ fontSize: '2rem' , fontWeight: 'bold' }}>
+                    <Typography variant="h4" gutterBottom sx={{ fontSize: '2rem', fontWeight: 'bold' }}>
                         About Mello
                     </Typography>
                     <Typography sx={{ fontSize: '1.2rem' }}>
-                        A fine-tuned version of <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1" target="_blank" rel="noopener noreferrer">Mistral-7B-Instruct-v0.1</a> on the <a href="https://huggingface.co/datasets/nbertagnolli/counsel-chat" target="_blank" rel="noopener noreferrer">counsel-chat</a> dataset for mental health counseling conversations. Mello aims to provide a safe space for individuals to express their emotions, explore coping strategies, and access valuable resources.
+                        A fine-tuned version of <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1" style={{ color: "inherit" }} target="_blank" rel="noopener noreferrer">Mistral-7B-Instruct-v0.1</a> on the <a href="https://huggingface.co/datasets/nbertagnolli/counsel-chat" style={{ color: "inherit" }} target="_blank" rel="noopener noreferrer">counsel-chat</a> dataset for mental health counseling conversations. Mello aims to provide a safe space for individuals to express their emotions, explore coping strategies, and access valuable resources.
 
                     </Typography>
                     <br />
@@ -62,7 +62,7 @@ export default function About() {
                         Motivation
                     </Typography>
                     <Typography sx={{ fontSize: '1.2rem' }}>
-                    In an era where mental health support is of paramount importance, A large language model fine-tuned on mental health counseling conversations stands as a pioneering solution. Leveraging a diverse dataset of anonymized counseling sessions, the model has been trained to recognize and respond to a wide range of mental health concerns. The fine-tuning process incorporates ethical considerations, privacy concerns, and sensitivity to the nuances of mental health conversations. The resulting model will demonstrate an intricate understanding of mental health issues and provide empathetic and supportive responses.
+                        In an era where mental health support is of paramount importance, A large language model fine-tuned on mental health counseling conversations stands as a pioneering solution. Leveraging a diverse dataset of anonymized counseling sessions, the model has been trained to recognize and respond to a wide range of mental health concerns. The fine-tuning process incorporates ethical considerations, privacy concerns, and sensitivity to the nuances of mental health conversations. The resulting model will demonstrate an intricate understanding of mental health issues and provide empathetic and supportive responses.
                     </Typography>
                     <br />
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
@@ -76,7 +76,7 @@ export default function About() {
                         Axolotl
                     </Typography>
                     <Typography sx={{ fontSize: '1.2rem' }}>
-                        The axolotl config file can be found <a href="https://github.com/steve-cse/mello/blob/master/mello.yml" target="_blank" rel="noopener noreferrer" >here</a>
+                        The axolotl config file can be found <a href="https://github.com/steve-cse/mello/blob/master/mello.yml" style={{ color: "inherit" }} target="_blank" rel="noopener noreferrer" >here</a>
 
                     </Typography>
                     <div style={{ marginTop: 10 }}>
@@ -93,7 +93,7 @@ export default function About() {
                         </Typography>
 
                         <Typography >
-                        Coded with ❤️ by <a
+                            Coded with ❤️ by <a
                                 style={{ textDecoration: "none", color: "inherit" }}
                                 href="https://github.com/steve-cse"
                                 target="_blank" rel="noopener noreferrer"
