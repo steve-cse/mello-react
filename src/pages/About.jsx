@@ -1,7 +1,8 @@
 import React from "react";
-import { CssBaseline, Paper, Box, Typography, Link } from "@mui/material";
+import { CssBaseline, Paper, Box, Typography, Link, IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 export default function About() {
     const navigate = useNavigate();
     return (
@@ -87,7 +88,7 @@ export default function About() {
                         </a>
                     </div>
                     <br />
-                    <Button variant="outlined" onClick={() => navigate("/")}>Back</Button>
+                    <Button variant="contained" onClick={() => navigate("/")}><ArrowBackIcon/></Button>
                     <footer style={{ width: '100%', textAlign: 'center', marginTop: '2rem' }}>
                         <Typography variant="body1" sx={{ fontSize: '1rem' }}>Empathy in Every Byte
 
