@@ -27,7 +27,7 @@ export default function About() {
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
                         How to Use Mello
                     </Typography>
-                    <Typography component="ul" sx={{ fontSize: '1.2rem', letterSpacing:'-0.04em'}} align="justify">
+                    <Typography component="ul" sx={{ fontSize: '1.2rem', letterSpacing:'-0.04em'}} >
                         <li>Start a Conversation: Begin by typing your concerns or thoughts into the chat window. Mello will respond promptly and engage in a conversation with you.</li>
 
                         <li>Engage in Meaningful Dialogue:  Feel free to express your emotions, thoughts, and concerns openly. Mello is here to provide support and engage in active listening.</li>
@@ -40,7 +40,7 @@ export default function About() {
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
                         Common Questions
                     </Typography>
-                    <Typography component="ol" sx={{ fontSize: '1.2rem', letterSpacing:'-0.04em'}} align="justify">
+                    <Typography component="ol" sx={{ fontSize: '1.2rem', letterSpacing:'-0.04em'}} >
                         <li style={{ fontWeight: 'bold' }}>What can I talk about with Mello?</li>
 
                         <Typography sx={{ fontSize: '1.2rem' }}>You can discuss a wide range of topics related to mental health, emotions, relationships, and coping strategies.</Typography>
