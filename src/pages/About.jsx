@@ -1,5 +1,8 @@
 import React from "react";
-import { CssBaseline, Paper, Box, Typography, Link, IconButton } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -11,22 +14,20 @@ export default function About() {
             <Paper
                 sx={{
                     padding: "25px",
-                    textAlign: "justify"
                 }}
                 elevation={1}
-                square
             >
                 <Box >
                     <Typography variant="h4" gutterBottom sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
                         Help & Tutorials
                     </Typography>
-                    <Typography paragraph sx={{ fontSize: '1.2rem' }}>
+                    <Typography paragraph sx={{ fontSize: '1.2rem' ,letterSpacing:'-0.04em'}} align="justify">
                         Welcome to Mello's Help Page. We are here to assist you in navigating our platform effectively and accessing the support you need.
                     </Typography>
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
                         How to Use Mello
                     </Typography>
-                    <Typography component="ul" sx={{ fontSize: '1.2rem' }}>
+                    <Typography component="ul" sx={{ fontSize: '1.2rem', letterSpacing:'-0.04em'}} align="justify">
                         <li>Start a Conversation: Begin by typing your concerns or thoughts into the chat window. Mello will respond promptly and engage in a conversation with you.</li>
 
                         <li>Engage in Meaningful Dialogue:  Feel free to express your emotions, thoughts, and concerns openly. Mello is here to provide support and engage in active listening.</li>
@@ -39,7 +40,7 @@ export default function About() {
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
                         Common Questions
                     </Typography>
-                    <Typography component="ol" sx={{ fontSize: '1.2rem' }}>
+                    <Typography component="ol" sx={{ fontSize: '1.2rem', letterSpacing:'-0.04em'}} align="justify">
                         <li style={{ fontWeight: 'bold' }}>What can I talk about with Mello?</li>
 
                         <Typography sx={{ fontSize: '1.2rem' }}>You can discuss a wide range of topics related to mental health, emotions, relationships, and coping strategies.</Typography>
@@ -55,26 +56,21 @@ export default function About() {
                     <Typography variant="h4" gutterBottom sx={{ fontSize: '2rem', fontWeight: 'bold' }}>
                         About Mello
                     </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }}>
+                    <Typography sx={{ fontSize: '1.2rem',letterSpacing:'-0.04em' }} align="justify">
                         A fine-tuned version of <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1" style={{ color: "inherit" }} target="_blank" rel="noopener noreferrer">Mistral-7B-Instruct-v0.1</a> on the <a href="https://huggingface.co/datasets/nbertagnolli/counsel-chat" style={{ color: "inherit" }} target="_blank" rel="noopener noreferrer">counsel-chat</a> dataset for mental health counseling conversations. Mello aims to provide a safe space for individuals to express their emotions, explore coping strategies, and access valuable resources.
 
                     </Typography>
                     <br />
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
-                        Motivation
-                    </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }}>
-                        In an era where mental health support is of paramount importance, A large language model fine-tuned on mental health counseling conversations stands as a pioneering solution. Leveraging a diverse dataset of anonymized counseling sessions, the model has been trained to recognize and respond to a wide range of mental health concerns. The fine-tuning process incorporates ethical considerations, privacy concerns, and sensitivity to the nuances of mental health conversations. The resulting model will demonstrate an intricate understanding of mental health issues and provide empathetic and supportive responses.
-                    </Typography>
-                    <br />
+
+
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
                         Contributions
                     </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' }}>
+                    <Typography sx={{ fontSize: '1.2rem' ,letterSpacing:'-0.04em'}} align="justify">
                         Feel free to contribute by submitting bug fixes, feature enhancements, documentation improvements, or any other valuable additions that can help enhance the functionality and usability of Mello. Your contributions are highly appreciated!
                     </Typography>
                     <br />
-                   
+
                     <div style={{ marginTop: 10 }}>
                         <a href="https://github.com/OpenAccess-AI-Collective/axolotl" target="_blank" rel="noopener noreferrer" >
 
@@ -82,7 +78,7 @@ export default function About() {
                         </a>
                     </div>
                     <br />
-                    <Button variant="contained" onClick={() => navigate("/")}><ArrowBackIcon/></Button>
+                    <Button variant="contained" onClick={() => navigate("/")}><ArrowBackIcon /></Button>
                     <footer style={{ width: '100%', textAlign: 'center', marginTop: '2rem' }}>
                         <Typography variant="body1" sx={{ fontSize: '1rem' }}>Empathy in Every Byte
 
@@ -90,7 +86,7 @@ export default function About() {
 
                         <Typography >
                             Coded with ❤️ by <a
-                                style={{  color: "inherit" }}
+                                style={{ color: "inherit" }}
                                 href="https://github.com/steve-cse"
                                 target="_blank" rel="noopener noreferrer"
                             >

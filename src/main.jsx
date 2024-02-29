@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Incognito from "./pages/Incognito.jsx";
 import About from "./pages/About.jsx"
+import FourOhFour from "./pages/FourOhFour.jsx";
 let theme = createTheme({
   palette: {
     mode: "dark",
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Landing />,
+    errorElement: <FourOhFour />,
   },
   {
     path: "/chat", 
