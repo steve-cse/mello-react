@@ -297,7 +297,7 @@ function Incognito() {
                         Mello
                     </Typography>
 
-                    <IconButton href="https://github.com/steve-cse/mello-react">
+                    <IconButton href="https://github.com/steve-cse/mello-react" target="_blank" rel="noopener noreferrer">
                         <GitHubIcon />
                     </IconButton>
 

@@ -5,9 +5,7 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
-import FavoriteIcon from '@mui/icons-material/Favorite';
 export default function Landing() {
     const navigate = useNavigate();
     return (
@@ -42,9 +40,6 @@ export default function Landing() {
                     }}
                 >
 
-                    {/* <Avatar sx={{ mb: '20px', height: '85px', width: '85px' }} alt="mello_logo" src="/logo.png" variant="rounded">
-                        M
-                    </Avatar> */}
                     <img src="/logo.png" alt="" width="100" style={{ marginBottom: '25px' }} />
                     <Typography
                         component="h1"
@@ -68,6 +63,7 @@ export default function Landing() {
                     <Button variant="outlined" color="secondary" sx={{ width: "200px" }} onClick={() => navigate("/incognito")}>
                         Incognito Mode
                     </Button>
+
                     <Box sx={{
                         position: 'fixed',
                         bottom: 0,
@@ -75,14 +71,8 @@ export default function Landing() {
                         height: 75,
                         textAlign: 'center',
                     }} textAlign="center">
-                        <Typography >
-                            👨‍💻 with ❤️ by <a
-                                style={{ textDecoration: "none", color: "inherit" }}
-                                href="https://github.com/steve-cse"
-                                target="_blank" rel="noopener noreferrer"
-                            >
-                                Steve Boby George
-                            </a>
+                        <Typography variant="body2" color="textSecondary">
+                            <a onClick={() => navigate("/about")} style={{ textDecoration: "none", color: "inherit" ,cursor: "pointer"}}>Help & About</a> | <a href="https://github.com/steve-cse/mello-react" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", color: "inherit" }}>Source Code</a>
                         </Typography >
 
                     </Box>

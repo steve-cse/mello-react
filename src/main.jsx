@@ -12,7 +12,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ProtectedRoute from "./components/ProtectedRoute"
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Incognito from "./pages/Incognito.jsx";
-
+import About from "./pages/About.jsx"
 let theme = createTheme({
   palette: {
     mode: "dark",
@@ -53,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/incognito",
     element: <Incognito/>
+  },
+  {
+    path: "/about",
+    element: <About/>
   }
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
