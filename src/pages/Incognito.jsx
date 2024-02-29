@@ -33,7 +33,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import StopIcon from '@mui/icons-material/Stop';
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
 import Runpod from "../runpod/Runpod";
+import Mello_Avatar from "../assets/mello_avatar.webp";
+import Incognito_Avatar from "../assets/incognito_avatar.png"
 import "./Incognito.css";
+
 function Incognito() {
     const drawerWidth = 240;
 
@@ -505,7 +508,7 @@ function Incognito() {
                                         <Avatar
                                             sx={{ ml: 1 }}
                                             alt="mello_avatar"
-                                            src="/mello_avatar.webp"
+                                            src={Mello_Avatar}
                                         />
                                     </StyledBadge>
                                 )}
@@ -524,7 +527,7 @@ function Incognito() {
                                     {message.message}
                                 </Typography>
                                 {message.sender === "user" && <Avatar sx={{ mr: 1 }} alt="incognito_avatar"
-                                    src="/incognito.png">U</Avatar>}
+                                    src={Incognito_Avatar}>I</Avatar>}
 
                             </Box>
                         ))) : (

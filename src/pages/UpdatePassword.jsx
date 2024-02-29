@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Avatar from "@mui/material/Avatar";
+import Mello_Logo from "../assets/logo.png";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -63,12 +63,7 @@ function UpdatePassword() {
                         alignItems: "center",
                     }}
                 >
-                    <Avatar
-                        src="/mello_avatar.png"
-                        sx={{ m: 1, height: "75px", width: "75px" }}
-                    >
-                        M
-                    </Avatar>
+                    <img src={Mello_Logo} alt="" width="100" style={{marginBottom:'25px'}} />
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
                         Update Password
                     </Typography>

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -13,6 +12,7 @@ import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { supabaseClient } from '../config/supabase';
+import Mello_Logo from "../assets/logo.png";
 
 function Login() {
     const [session, setSession] = useState(null);
@@ -56,7 +56,7 @@ function Login() {
                     >
                         M
                     </Avatar> */}
-                    <img src="/logo.png" alt="" width="100" style={{margin:'25px'}} />
+                    <img src={Mello_Logo} alt="" width="100" style={{margin:'25px'}} />
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
                         Welcome Back
                     </Typography>

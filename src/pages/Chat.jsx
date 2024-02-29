@@ -38,6 +38,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
 import Runpod from "../runpod/Runpod";
+import Mello_Avatar from "../assets/mello_avatar.webp";
 import "./Chat.css";
 function Chat() {
     const drawerWidth = 240;
@@ -635,7 +636,7 @@ function Chat() {
                                             <Avatar
                                                 sx={{ ml: 1 }}
                                                 alt="mello_avatar"
-                                                src="/mello_avatar.webp"
+                                                src={Mello_Avatar}
                                             />
                                         </StyledBadge>
                                     )}

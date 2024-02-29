@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert"; // Import Alert component from Material-UI
+import Mello_Logo from "../assets/logo.png";
 import { supabaseClient } from '../config/supabase';
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
@@ -75,7 +76,7 @@ function Signup() {
                     >
                         M
                     </Avatar> */}
-                    <img src="/logo.png" alt="" width="100" style={{marginBottom:'25px'}} />
+                    <img src={Mello_Logo} alt="" width="100" style={{marginBottom:'25px'}} />
                     <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
                         Create your Account
                     </Typography>
