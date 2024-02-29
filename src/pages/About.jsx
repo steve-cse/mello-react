@@ -62,7 +62,7 @@ export default function About() {
                         Motivation
                     </Typography>
                     <Typography sx={{ fontSize: '1.2rem' }}>
-                        In today's critical focus on mental health support, a groundbreaking solution emerges: a large language model fine-tuned on counseling conversations. Drawing from diverse anonymized datasets, it comprehensively addresses concerns like anxiety, depression, and stress. Ethical and privacy considerations shape its training, ensuring sensitivity to mental health nuances. The model offers empathetic responses, catering to individuals and healthcare professionals alike, heralding a new era of accessible and nuanced mental health support.
+                    In an era where mental health support is of paramount importance, A large language model fine-tuned on mental health counseling conversations stands as a pioneering solution. Leveraging a diverse dataset of anonymized counseling sessions, the model has been trained to recognize and respond to a wide range of mental health concerns. The fine-tuning process incorporates ethical considerations, privacy concerns, and sensitivity to the nuances of mental health conversations. The resulting model will demonstrate an intricate understanding of mental health issues and provide empathetic and supportive responses.
                     </Typography>
                     <br />
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
@@ -93,7 +93,7 @@ export default function About() {
                         </Typography>
 
                         <Typography >
-                        Crafted and engineered with ❤️ by <a
+                        Coded with ❤️ by <a
                                 style={{ textDecoration: "none", color: "inherit" }}
                                 href="https://github.com/steve-cse"
                                 target="_blank" rel="noopener noreferrer"
