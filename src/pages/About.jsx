@@ -10,6 +10,7 @@ export default function About() {
             <Paper
                 sx={{
                     padding: "25px",
+                    textAlign: "justify"
                 }}
                 elevation={1}
                 square
