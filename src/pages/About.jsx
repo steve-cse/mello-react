@@ -65,7 +65,7 @@ export default function About() {
                         Contributions
                     </Typography>
                     <Typography sx={{ fontSize: '1.2rem' ,letterSpacing:'-0.04em'}} >
-                        Feel free to contribute by submitting bug fixes, feature enhancements, documentation improvements, or any other valuable additions that can help enhance the functionality and usability of Mello. Your contributions are highly appreciated!
+                        Feel free to contribute by submitting bug fixes, feature enhancements, improvements, or any other valuable additions that can help enhance the functionality and usability of Mello. Your contributions are highly appreciated!
                     </Typography>
                     <br />
 
