@@ -11,7 +11,7 @@ export default defineConfig({
         name: "Mello",
         short_name: "Mello",
         description: "Mello: A Large Language Model for Mental Health Counseling Conversations",
-        theme_color: "#ffffff",
+        theme_color: "#000000",
         icons: [
           {
             "src": "/pwa-192x192.png",
