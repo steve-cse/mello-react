@@ -64,7 +64,7 @@ export default function About() {
                     <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
                         Contributions
                     </Typography>
-                    <Typography sx={{ fontSize: '1.2rem' ,letterSpacing:'-0.04em'}} align="justify">
+                    <Typography sx={{ fontSize: '1.2rem' ,letterSpacing:'-0.04em'}} >
                         Feel free to contribute by submitting bug fixes, feature enhancements, documentation improvements, or any other valuable additions that can help enhance the functionality and usability of Mello. Your contributions are highly appreciated!
                     </Typography>
                     <br />
