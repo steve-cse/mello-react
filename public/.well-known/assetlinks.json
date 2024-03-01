@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+   "namespace": "android_app",
+    "package_name": "app.mello.twa",
+    "sha256_cert_fingerprints":["B2:73:CB:3B:F9:B1:88:6B:A9:3C:6C:49:3F:CB:DB:65:8A:4C:88:DC:AC:DB:93:9B:97:F8:FA:EF:B6:C5:26:97"]
+  }
+}]
