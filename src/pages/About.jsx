@@ -23,7 +23,7 @@ export default function About() {
                         <IconButton onClick={() => { navigate("/"); }}>
                             <ArrowBackIosNewIcon />
                         </IconButton>
-                        <Typography variant="h4" underline gutterBottom sx={{ fontSize: '2.5rem', fontWeight: 'bold', marginTop: '9px' }}>
+                        <Typography variant="h4" underline gutterBottom sx={{ fontSize: '2.5rem', fontWeight: 'bold', marginTop: '12px' }}>
                             Help
                         </Typography>
                     </div>
