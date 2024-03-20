@@ -32,7 +32,7 @@ export default function About() {
                     <Typography paragraph sx={{ fontSize: '1.2rem', letterSpacing: '-0.04em' }} align="justify">
                         Welcome to Mello's Help Page. We are here to assist you in navigating our platform effectively and accessing the support you need.
                     </Typography>
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem',textDecoration:'underline' }}>
                         How to Use Mello
                     </Typography>
                     <Typography component="ul" sx={{ fontSize: '1.2rem', letterSpacing: '-0.04em' }} >
@@ -45,18 +45,31 @@ export default function About() {
                         <li>Maintain Privacy and Confidentiality: Mello does not store any personal information from your conversations in incognito mode. Your privacy is of utmost importance to us.</li>
 
                     </Typography>
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' ,textDecoration:'underline'}}>
+                        Features
+                    </Typography>
+                    <Typography component="ul" sx={{ fontSize: '1.2rem', letterSpacing: '-0.04em' }} >
+                        <li>Synchronize your conversations seamlessly across all your devices.</li>
+
+                        <li>Utilize the export functionality to save and store your conversations conveniently.</li>
+
+                        <li>Safeguard your privacy with the incognito mode, ensuring confidentiality in your private chats.</li>
+
+
+
+                    </Typography>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' ,textDecoration:'underline'}}>
                         Common Questions
                     </Typography>
                     <Typography component="ol" sx={{ fontSize: '1.2rem', letterSpacing: '-0.04em' }} >
-                        <li style={{ fontWeight: 'bold' }}>What can I talk about with Mello?</li>
+                        <li>What can I talk about with Mello?</li>
 
                         <Typography sx={{ fontSize: '1.2rem' }}>You can discuss a wide range of topics related to mental health, emotions, relationships, and coping strategies.</Typography>
 
-                        <li style={{ fontWeight: 'bold' }}>Is Mello a substitute for professional therapy?</li>
+                        <li>Is Mello a substitute for professional therapy?</li>
                         <Typography sx={{ fontSize: '1.2rem' }}>While Mello aims to provide support and guidance, it is not a replacement for professional therapy or medical advice. If you are in crisis or need immediate assistance, please seek help from a qualified mental health professional or contact emergency services.</Typography>
 
-                        <li style={{ fontWeight: 'bold' }}>How do I end a conversation with Mello?</li>
+                        <li>How do I end a conversation with Mello?</li>
                         <Typography sx={{ fontSize: '1.2rem' }}>You can end the conversation at any time by closing the chat window or typing "Goodbye."</Typography>
 
                     </Typography>
@@ -71,7 +84,7 @@ export default function About() {
                     <br />
 
 
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' }}>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem' ,textDecoration:'underline'}}>
                         Contributions
                     </Typography>
                     <Typography sx={{ fontSize: '1.2rem', letterSpacing: '-0.04em' }} >

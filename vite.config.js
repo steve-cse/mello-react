@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      includeAssets: ['src/assets/*'],
       manifest: {
         name: "Mello",
         short_name: "Mello",
