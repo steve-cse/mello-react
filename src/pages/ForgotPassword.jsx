@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import Avatar from "@mui/material/Avatar";
+import Mello_Logo from "../assets/logo.png";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -51,21 +51,16 @@ function ForgotPassword() {
             alignItems: "center",
           }}
         >
-          {/* <Avatar
-            src="/mello_avatar.png"
-            sx={{ m: 1, height: "75px", width: "75px" }}
-          >
-            M
-          </Avatar> */}
-          <img src="/logo.png" alt="" width="100" style={{marginBottom:'25px'}} />
+
+          <img src={Mello_Logo} alt="" width="100" style={{ margin: '25px' }} />
           <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
             Forgot Password
           </Typography>
           {resetSuccess && (
-                        <Alert severity="success" sx={{ mt: 2 }}>
-                            {resetSuccess}
-                        </Alert>
-                    )}
+            <Alert severity="success" sx={{ mt: 2 }}>
+              {resetSuccess}
+            </Alert>
+          )}
           {resetError && <Alert severity="error" sx={{ mt: 1 }}>{resetError}</Alert>}
           <Box
             component="form"
