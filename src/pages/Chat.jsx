@@ -413,12 +413,12 @@ function Chat() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                        Mello
+                        Mindflow
                     </Typography>
                     <IconButton onClick={handleOpenSettingsModal} >
                         <SettingsIcon />
                     </IconButton>
-                    <IconButton href="https://github.com/steve-cse/mello-react" target="_blank" rel="noopener noreferrer">
+                    <IconButton href="https://github.com/harsh-uiux/Mental-Health-Chatbot" target="_blank" rel="noopener noreferrer">
                         <GitHubIcon />
                     </IconButton>
 
@@ -674,7 +674,7 @@ function Chat() {
                 {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
 
 
-                {isTyping && <div style={{ marginLeft: 23, marginBottom: -11 }}>Mello is typing<span className="blink">....</span> </div>}
+                {isTyping && <div style={{ marginLeft: 23, marginBottom: -11 }}>Mindflow is typing<span className="blink">....</span> </div>}
 
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
