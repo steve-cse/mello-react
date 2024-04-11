@@ -674,7 +674,7 @@ function Chat() {
                 {alertError && <Alert severity="error" onClose={() => { setAlertError("") }}>{alertError}</Alert>}
 
 
-                {isTyping && <div style={{ marginLeft: 23, marginBottom: -11 }}>Mello is typing<span className="blink">....</span> </div>}
+                {isTyping && <div style={{ marginLeft: 23, marginBottom: -11 }}>Mindflow is typing<span className="blink">....</span> </div>}
 
                 <form onSubmit={(event) => { handleSend(event, promptRef.current.value) }}>
                     <Box display="flex" alignItems="center" sx={{ p: 2 }}>
