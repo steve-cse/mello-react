@@ -15,10 +15,10 @@ export default defineConfig({
       // static assets in the public folder
       includeAssets: ["**/*"],
       manifest: {
-        name: "Mello",
-        short_name: "Mello",
+        name: "Mindflow",
+        short_name: "Mindflow",
         description:
-          "Mello: A Large Language Model for Mental Health Counseling Conversations",
+          "Mindflow: A Large Language Model for Mental Health Counseling Conversations",
         theme_color: "#000000",
         icons: [
           {
