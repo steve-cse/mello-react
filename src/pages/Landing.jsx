@@ -51,7 +51,7 @@ export default function Landing() {
             variant="h3"
             sx={{ mb: 4, fontWeight: "bold" }}
           >
-            Welcome to Mello
+            Welcome to Mindflow
           </Typography>
           <Typography variant="h6" sx={{ mb: 4 }}>
             Your Companion for Mental Health
@@ -97,7 +97,7 @@ export default function Landing() {
               </a>{" "}
               |{" "}
               <a
-                href="https://github.com/steve-cse/mello-react"
+                href="https://github.com/harsh-uiux/Mental-Health-Chatbot"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "inherit" }}
