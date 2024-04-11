@@ -300,7 +300,7 @@ function Incognito() {
                         Mello
                     </Typography>
 
-                    <IconButton href="https://github.com/steve-cse/mello-react" target="_blank" rel="noopener noreferrer">
+                    <IconButton href="https://github.com/harsh-uiux/Mental-Health-Chatbot" target="_blank" rel="noopener noreferrer">
                         <GitHubIcon />
                     </IconButton>
 
