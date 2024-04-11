@@ -51,7 +51,7 @@ export default function Landing() {
             variant="h3"
             sx={{ mb: 4, fontWeight: "bold" }}
           >
-            Welcome to Mello
+            Welcome to Mindflow
           </Typography>
           <Typography variant="h6" sx={{ mb: 4 }}>
             Your Companion for Mental Health
