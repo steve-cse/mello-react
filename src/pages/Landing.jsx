@@ -97,7 +97,7 @@ export default function Landing() {
               </a>{" "}
               |{" "}
               <a
-                href="https://github.com/steve-cse/mello-react"
+                href="https://github.com/harsh-uiux/Mental-Health-Chatbot"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "inherit" }}
