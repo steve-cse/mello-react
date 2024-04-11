@@ -18,7 +18,7 @@ export default defineConfig({
         name: "Mindflow",
         short_name: "Mindflow",
         description:
-          "Mindflow: A Large Language Model for Mental Health Counseling Conversations",
+          "Mindflow Chatbot",
         theme_color: "#000000",
         icons: [
           {
