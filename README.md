@@ -3,30 +3,17 @@
     
   </a>
  <p align="center">
-   <img width="150" height="150" src="https://raw.githubusercontent.com/steve-cse/mello-react/master/public/pwa-512x512.png" alt="Logo">
+   <img width="150" height="150" src="public/pwa-512x512.png" alt="Logo">
   </p>
-  <h1 align="center"><b>Mello Mental Health</b></h1>
+  <h1 align="center"><b>Mindflow Chatbot</b></h1>
   <p align="center">
   Empathy in Every Byte
-   <br />
-    <a href="https://mello-react.vercel.app/"><strong>mello-react.vercel.app</strong></a>
-    <br />
-    <br />
-    <a href="https://huggingface.co/steve-cse/MelloGPT"><strong>Hugging Face</strong></a>
-    <br />
-    <br />
-    <a href="https://www.youtube.com/watch?v=HMg_S0wZCpE&list=PLDk6cC4Vo2kdgT5WZtLiMMPl6a_YVk1O2"><strong>Check out the Demo</strong></a>
-    <br />
-    <br />
-    <b>Download the <a href="https://github.com/steve-cse/mello-react/releases">App</a> for Android</b>
-   
-    
     
   </p>
   
 </p>
 
-Mello is a large language model for mental health counseling conversations. It is a fine-tuned version of [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) on the [counsel-chat](https://huggingface.co/datasets/nbertagnolli/counsel-chat) dataset for mental health counseling conversations.
+Mindflow is a large language model for mental health counseling conversations. It is a fine-tuned version of [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) on the [counsel-chat](https://huggingface.co/datasets/nbertagnolli/counsel-chat) dataset for mental health counseling conversations.
 
 
 # Motivation
