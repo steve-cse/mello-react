@@ -32,16 +32,20 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import StopIcon from '@mui/icons-material/Stop';
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
-import Runpod from "../runpod/Runpod";
 import Mello_Avatar from "../assets/mello_avatar.webp";
 import Incognito_Avatar from "../assets/incognito_avatar.png"
+import OpenAI from 'openai';
 import "./Incognito.css";
 
 function Incognito() {
     const drawerWidth = 240;
-
+    const openai = new OpenAI({
+        apiKey: import.meta.env.VITE_RUNPOD_KEY,
+        baseURL:'https://api.runpod.ai/v2/vllm-35ggmg93cx6ah0/openai/v1',
+        dangerouslyAllowBrowser: true
+      });
     const { text, startListening, stopListening, isListening, recognitionSupport } = useSpeechRecognition();
-    const podAPI = Runpod();
+    
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -172,33 +176,23 @@ function Incognito() {
     };
 
     async function processMessageToMelloGPT(chatMessages) {
-        if (podAPI !== "No Running Pods") {
+        
             setIsTyping(true)
             try {
                 let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
                     let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
                     return { role: role, content: messageObject.message }
                 });
-                const apiRequestBody = {
-                    "model": "steve-cse/MelloGPT",
-                    "temperature": 0.4,
-                    "messages": [...apiMessages]
-                }
+            
 
-                const response = await fetch(podAPI, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(apiRequestBody)
+                const response = await openai.chat.completions.create ({
+                    model: "steve-cse/MelloGPT",
+                    temperature: 0.4,
+                    messages: [...apiMessages]
                 });
+              
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-
+                const data = response
 
                 const updatedMessages = [...chatMessages];
 
@@ -220,10 +214,7 @@ function Incognito() {
                 setIsTyping(false)
 
             }
-        } else {
-            setAlertError("API Error: Server not Running")
-
-        }
+       
     }
 
 
