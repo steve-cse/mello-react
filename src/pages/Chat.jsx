@@ -37,14 +37,12 @@ import StopIcon from '@mui/icons-material/Stop';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import useSpeechRecognition from "../hooks/useSpeechRecognition";
-import Runpod from "../runpod/Runpod";
 import Mello_Avatar from "../assets/mello_avatar.webp";
 import "./Chat.css";
 function Chat() {
     const drawerWidth = 240;
     const { session, user, signOut } = useAuth();
     const { text, startListening, stopListening, isListening, recognitionSupport } = useSpeechRecognition();
-    const podAPI = Runpod();
     // required states
     const [selectedIndex, setSelectedIndex] = useState(null); // list selection state
     const [mobileOpen, setMobileOpen] = useState(false);
