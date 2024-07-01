@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
@@ -8,6 +8,16 @@ import Typography from "@mui/material/Typography";
 import Mello_Logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 export default function Landing() {
+  const [photo, setPhoto] = useState(null)
+  useEffect(() => {
+    fetch(`https://api.unsplash.com/photos/random?query=motivational-quote&client_id=${import.meta.env.VITE_UNSPLASH_API_KEY}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPhoto(data);
+      })
+      .catch((error) => console.error('Error fetching the photo:', error));
+  }, []);
+
   const navigate = useNavigate();
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
@@ -19,7 +29,7 @@ export default function Landing() {
         md={7}
         sx={{
           backgroundImage:
-            "url(https://source.unsplash.com/featured/?motivational-quotes)",
+            photo ? `url(${photo.urls.regular})` : 'none',
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
