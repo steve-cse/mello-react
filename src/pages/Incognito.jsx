@@ -172,19 +172,23 @@ function Incognito() {
     };
 
     async function processMessageToMelloGPT(chatMessages) {
-       
-            setIsTyping(true)
+        setIsTyping(true);
+        let attempts = 0;
+        const maxAttempts = 15;
+    
+        while (attempts < maxAttempts) {
             try {
                 let apiMessages = chatMessages[selectedIndex || 0].map((messageObject) => {
                     let role = messageObject.sender === "MelloGPT" ? "assistant" : "user";
-                    return { role: role, content: messageObject.message }
+                    return { role: role, content: messageObject.message };
                 });
+    
                 const apiRequestBody = {
                     "model": "steve-cse/MelloGPT",
                     "temperature": 0.4,
                     "messages": [...apiMessages]
-                }
-
+                };
+    
                 const response = await fetch("https://mello-proxy.vercel.app/api/chat", {
                     method: "POST",
                     headers: {
@@ -192,36 +196,38 @@ function Incognito() {
                     },
                     body: JSON.stringify(apiRequestBody)
                 });
-
+    
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-
+    
                 const data = await response.json();
-
-
+    
                 const updatedMessages = [...chatMessages];
-
                 updatedMessages[selectedIndex || 0].push({
                     message: data.choices[0].message.content,
                     sender: "MelloGPT"
                 });
-
+    
                 setChatData(prevData => ({
                     ...prevData,
                     messages: updatedMessages
                 }));
-                setIsTyping(false)
-
+                setIsTyping(false);
+                return; // Exit the function if the request is successful
+    
             } catch (error) {
                 console.error('API Error:', error);
-                setAlertError('API Error: ' + error.message)
-
-                setIsTyping(false)
-
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    setAlertError('API Error: ' + error.message);
+                    setIsTyping(false);
+                    return;
+                }
             }
-       
+        }
     }
+    
 
 
     const handleNewChat = () => {
